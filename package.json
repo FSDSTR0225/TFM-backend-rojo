@@ -1,0 +1,56 @@
+{
+  "name": "tfm-backend-rojo",
+  "version": "1.0.0",
+  "description": "Back-end para plataforma de perfil de desarrollador y busqueda de empleo ",
+  "keywords": [
+    "Backend",
+    "for",
+    "a",
+    "developer",
+    "portfolio",
+    "and",
+    "recruitment",
+    "platform.",
+    "Built",
+    "with",
+    "Node.js",
+    "Express",
+    "MongoDB",
+    "and",
+    "JWT",
+    "authentication.",
+    "Features",
+    "include",
+    "job",
+    "offers",
+    "matching",
+    "system",
+    "and",
+    "role-based",
+    "access"
+  ],
+  "homepage": "https://github.com/FSDSTR0225/TFM-backend-rojo#readme",
+  "bugs": {
+    "url": "https://github.com/FSDSTR0225/TFM-backend-rojo/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FSDSTR0225/TFM-backend-rojo.git"
+  },
+  "license": "ISC",
+  "author": "red-team-0225",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "mongoose": "^8.13.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
