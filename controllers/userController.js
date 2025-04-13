@@ -1,7 +1,11 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+<<<<<<< HEAD
 const User = require("../models/userModel");
 const { json } = require("express");
+=======
+const User = require("../models/user");
+>>>>>>> dab9d559d9f38d4c96a067ea8a3c8553961eed8b
 
 module.exports = {
   login: async (req, res) => {
