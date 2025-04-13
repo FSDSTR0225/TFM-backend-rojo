@@ -27,7 +27,7 @@ module.exports = {
     }
   },
 
-  registro: async (req, res) => {
+  register: async (req, res) => {
     try {
       const { nombre, apellidos, email, password } = req.body;
       //validar campos obligatorios
