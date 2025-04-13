@@ -32,6 +32,10 @@ mongoose
   });
 
 app.use("/user", userRouter);
+app.use("/offer", offerRouter);
+app.use("/project", projectRouter);
+app.use("/recruiter", recruiterRouter);
+app.use("/dev", devRouter);
 
 
 app.listen(port, () => {
