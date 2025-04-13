@@ -11,6 +11,7 @@ const port = process.env.PORT;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 // Añade esto después de las configuraciones de app.use()
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
