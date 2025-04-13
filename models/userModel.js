@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
         tituloProfesional:{type:String},
         descripcion:{type:String},
         habilidades:{type: Array},
-        expereciencia:[
+        experiencia:[
             {
                 empresa:{type:String},
                 puesto:{type:String},
@@ -18,11 +18,15 @@ const userSchema = new mongoose.Schema({
                 fechaFin:{type:Date}
             }
         ],
-        proyectos:[
+        estudios:[
             {
-                nombre:{type:String},
+                nombreInstituto:{type:String},
+                fechaInicio:{type:Date},
+                fechaFinal:{type:Date},
+                titulacion:{type:String},
                 descripcion:{type:String},
-                tecnologias_utilizadas:{type: Array},
+                ubicación:{type:String},
+                multimedia:{type:String}
             }
         ],
         roles: { type: String, enum: ['developer', 'recruiter'] },

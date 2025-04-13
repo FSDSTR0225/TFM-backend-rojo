@@ -4,6 +4,10 @@ require("dotenv").config();
 
 //Routers Main
 const userRouter = require("./routes/userRouter");
+const offerRouter = require("./routes/offerRouter");
+const projectRouter = require("./routes/projectRouter");
+const recruiterRouter = require("./routes/recruiterRouter");
+const devRouter = require("./routes/devRouter");
 
 //Configuraciones
 const app = express();
