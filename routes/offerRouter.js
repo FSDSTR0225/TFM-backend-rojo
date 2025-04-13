@@ -1,12 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const {
-    getOffer,
-    getOfferById
-} = require('../controllers/offerController');
+const offerController = require('../controllers/offerController');
 
-router.get('/offer', getOffers);
+router.get('/offer', offerController.getOffers);
 
-router.get('/offer/:id', getOfferById);
+router.get('/offer/:id', offerController.getOfferById);
 
 module.exports = router;

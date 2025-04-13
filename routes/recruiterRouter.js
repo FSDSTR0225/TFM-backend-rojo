@@ -1,12 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const {
-    getRecruiter,
-    getRecruiterById
-} = require('../controllers/recruiterController');
+const recruiterController = require('../controllers/recruiterController');
 
-router.get('/recruiter', getRecruiters);
+router.get('/recruiter', recruiterController.getRecruiters);
 
-router.get('/recruiter/:id', getRecruiterById);
+router.get('/recruiter/:id', recruiterController.getRecruiterById);
 
 module.exports = router;
