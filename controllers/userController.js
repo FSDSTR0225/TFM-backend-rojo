@@ -9,7 +9,7 @@ module.exports = {
     try {
       let email = req.body.email;
       let password = req.body.password;
-      console.log('valores: ', req.body);
+
       let user = await User.findOne({ email: email });
       if (!user) {
         res.status(404).json({ msj: "El usuario no existe" });
@@ -29,17 +29,17 @@ module.exports = {
 
   register: async (req, res) => {
     try {
-      const { nombre, apellidos, email, password } = req.body;
+      const { nombre, apellidos, email, password, rol, fechaNacimiento  } = req.body;
       //validar campos obligatorios
       //separar en middleware
-      if (!nombre || !apellidos || !password || !email) {
-        return res.status(400).json({ msj: "Falta algun dato" });
+      if (!nombre || !apellidos || !password || !email || !rol || !fechaNacimiento) {
+         res.status(400).json({ msj: "Falta algun dato" });
       }
       //Verificar que no este registrado
       //separar en middleware
       const existingUser = await User.findOne({ email: email });
       if (existingUser) {
-        return res.status(409).json({ msg: "El usuario ya existe" });
+         res.status(409).json({ msg: "El usuario ya existe" });
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -48,6 +48,8 @@ module.exports = {
         apellidos,
         email,
         password: hashedPassword,
+        rol,
+        fechaNacimiento
       });
       await newUser.save();
       const { password: _, ...userData } = newUser.toObject();
