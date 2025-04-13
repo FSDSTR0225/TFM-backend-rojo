@@ -14,7 +14,7 @@ module.exports = {
         res.status(404).json({ msg: 'User does not exist' });
       }
       if (!bcrypt.compareSync(password, user.password)) {
-        res.status(404).json({ msg: 'Incorrect password' });
+        res.status(404).json({ msg: 'User does not exist' });
       }
       const { password: _, ...rest } = user.toObject();
       res.status(200).json({
