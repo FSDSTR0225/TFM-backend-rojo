@@ -31,11 +31,11 @@ mongoose
     console.error("❌ Error conectando a MongoDB:", error);
   });
 
-app.use("/user", userRouter);
-app.use("/offer", offerRouter);
-app.use("/project", projectRouter);
-app.use("/recruiter", recruiterRouter);
-app.use("/dev", devRouter);
+app.use("/users", userRouter);
+app.use("/offers", offerRouter);
+app.use("/projects", projectRouter);
+app.use("/recruiters", recruiterRouter);
+app.use("/devs", devRouter);
 
 
 app.listen(port, () => {
