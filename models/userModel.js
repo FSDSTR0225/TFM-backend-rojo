@@ -5,7 +5,8 @@ const userSchema = new mongoose.Schema({
     email: { type: String, unique: true },
     password: { type: String }, // Secure hash
     name: { type: String }, 
-    surname: { type: String }, 
+    surname: { type: String },
+    birthDate: { type: Date }, 
     avatar: { type: String },
     professionalPosition: { type: String },
     description: { type: String },
@@ -30,6 +31,15 @@ const userSchema = new mongoose.Schema({
       },
     ],
     roles: { type: String, enum: ['developer', 'recruiter'] },
+    // contactDev: [
+    //   {
+    //     instagram: { type: String },
+    //     linkedin: { type: Date },
+    //     github: { type: Date }
+    //   },
+    // ],
+    // languagelevel
+    // aboutme
   }, {
     timestamps: true
   });
