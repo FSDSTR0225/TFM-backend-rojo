@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const offerSchema = new mongoose.Schema({
+
   position: { type: String },                  
   role: { type: String },                      
   location: { type: String },                  

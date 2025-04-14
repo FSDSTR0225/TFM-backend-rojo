@@ -7,7 +7,7 @@ module.exports = {
             const offers = await Offer.find({});
             res.json(offers);
         } catch (error) {
-            res.status(500).json({ msg: error.message});
+            res.status(500).json({ msg: "Ningun registro de ofertas"});
         }
     },
 

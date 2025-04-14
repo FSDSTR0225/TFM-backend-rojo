@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
-const Recruiter = require('../models/recruiterModel');
+const Recruiter = require('../models/userModel');
 
 module.exports = {
     getRecruiters : async (req,res) => {
         try {
             const recruiters = await Recruiter.find({});
             res.json(recruiters);
+        
         } catch (error) {
             res.status(500).json({ msg: error.message});
         }
