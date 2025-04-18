@@ -2,15 +2,15 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
-  password: { type: String }, 
-  name: { type: String },
-  surname: { type: String },
-  birthDate: { type: Date },
+  password: { type: String, required: true }, 
+  name: { type: String, required: true },
+  surname: { type: String, required: true },
+  birthDate: { type: Date, required: true },
   phone: { type: String },
   avatar: { type: String },
   description: { type: String },
   roles: {
-    tipo: { type: String, enum: ['developer', 'recruiter'] },
+    tipo: { type: String, required: true, enum: ['developer', 'recruiter'] },
     developer: {
       professionalPosition: { type: String },
       languages: [
