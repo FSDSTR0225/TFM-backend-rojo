@@ -2,95 +2,64 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
   email: { type: String, unique: true },
-  password: { type: String }, // Secure hash
+  password: { type: String }, 
   name: { type: String },
   surname: { type: String },
   birthDate: { type: Date },
+  phone: { type: String },
   avatar: { type: String },
-  professionalPosition: { type: String },
   description: { type: String },
-  skills: { type: Array },
-  experience: [
-    {
-      company: { type: String },
-      position: { type: String },
-      startDate: { type: Date },
-      endDate: { type: Date },
-    },
-  ],
-  studies: [
-    {
-      instituteName: { type: String },
-      startDate: { type: Date },
-      endDate: { type: Date },
-      degree: { type: String },
-      description: { type: String },
-      location: { type: String },
-      multimedia: { type: String },
-    },
-  ],
   roles: {
     tipo: { type: String, enum: ['developer', 'recruiter'] },
     developer: {
-      posicionProfesional: { type: String },
-      habilidades: { type: Array },
-      idiomas: { type: Array },
-      experiencia: [
+      professionalPosition: { type: String },
+      languages: { type: Array },
+      skills: { type: Array },
+      experience: [
         {
-          empresa: { type: String },
-          puesto: { type: String },
-          descripcion: { type: String },
-          fechaInicio: { type: Date },
-          fechaFin: { type: Date },
-          ubicación: { type: String },
+          company: { type: String },
+          position: { type: String },
+          startDate: { type: Date },
+          endDate: { type: Date },
         },
       ],
-      proyectos: [
+      projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }],
+      studies: [
         {
-          nombre: { type: String },
-          descripcion: { type: String },
-          urls: { type: Array },
-          tecnologias_utilizadas: [{ type: String }],
-          duracion: { type: String },
-          tipo: [{ type: String }],
-          fecha: { type: Date },
-          multimedias: { type: String },
-        },
-      ],
-      estudios: [
-        {
-          nombreInstituto: { type: String },
-          fechaInicio: { type: Date },
-          fechaFinal: { type: Date },
-          titulacion: { type: String },
-          descripcion: { type: String },
-          ubicación: { type: String },
+          instituteName: { type: String },
+          startDate: { type: Date },
+          endDate: { type: Date },
+          degree: { type: String },
+          description: { type: String },
+          location: { type: String },
           multimedia: { type: String },
         },
       ],
-      ofertasInscriptas: { type: mongoose.Schema.Types.ObjectId, ref: 'Ofertas' },
+      registeredOffers: [
+        {
+          offer: { type: mongoose.Schema.Types.ObjectId, ref: 'Offer' },
+          appliedDate: { type: Date, default: Date.now },
+          status: { type: String, enum: ['pending', 'reviewed', 'interviewed', 'rejected', 'accepted'], default: 'pending' },
+        }
+      ]
     },
     recruiter: {
-      Empresa: [
-        {
           logo: { type: String },
-          nombreEmpresa: { type: String },
-          descripcion: { type: String },
-          ubicación: { type: String },
+          companyName: { type: String },
+          description: { type: String },
+          location: { type: String },
           sector: { type: String },
-          web: { type: String },
-          contacto: [
-            {
-              correo: { type: String },
-              telefono: { type: String },
-            },
+          website: { type: String },
+          contact: [
+              {
+                  email: { type: String },
+                  phone: { type: String },
+              }
           ],
-          multimedia: { type: String },
-        },
-      ],
-      ofertasCreadas: { type: mongoose.Schema.Types.ObjectId, ref: 'Ofertas' },
-    },
-  }
+          multimedia: { type: String }
+      },
+    createdOffers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Offer' }]
+  },
 }, {
   timestamps: true,
 });

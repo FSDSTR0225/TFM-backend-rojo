@@ -1,24 +1,38 @@
 const mongoose = require('mongoose');
 
 const offerSchema = new mongoose.Schema({
+  position: { type: String, required: true },
+  role: { type: String },
+  location: { type: String },
+  contractType: [{ type: String }],
+  company: { type: String, required: true },
+  salary: { type: Number },
+  skills: [{ type: String }],
+  description: { type: String },
+  language: { type: String },
+  deleteIt: { type: Date },
+  status: { type: String, enum: ['active', 'closed', 'draft'], default: 'active' },
 
-  position: { type: String },                  
-  role: { type: String },                      
-  location: { type: String },                  
-  contractType: [{ type: String }],            
-  company: { type: String },                   
-  salary: { type: Number },                    
-  skills: [{ type: String }],                  
-  description: { type: String },               
-  language: { type: String },                  
-  deleteIt: { type: Date },                    
-  status: { type: String },                    
-  
+  // Reference to the recruiter who created the offer
   owner: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',                               
-    required: true
-  }
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+  },
+
+  // Reference to applicants with application metadata
+  applicants: [{
+      user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User'
+      },
+      appliedDate: { type: Date, default: Date.now },
+      status: { 
+          type: String, 
+          enum: ['pending', 'reviewed', 'interviewed', 'rejected', 'accepted'], 
+          default: 'pending' 
+      },
+  }]
 }, {
   timestamps: true
 });
