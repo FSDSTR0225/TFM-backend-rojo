@@ -13,7 +13,12 @@ const userSchema = new mongoose.Schema({
     tipo: { type: String, enum: ['developer', 'recruiter'] },
     developer: {
       professionalPosition: { type: String },
-      languages: { type: Array },
+      languages: [
+        {
+        language: { type: String },
+        languagelevel: { type: String },
+        }
+      ],
       skills: { type: Array },
       experience: [
         {
