@@ -4,7 +4,7 @@ const Dev = require('../models/userModel');
 module.exports = {
     getDevs : async (req,res) => {
         try {
-            const devs = await Dev.find({});
+            const devs = await Dev.find({"roles.tipo": "developer"});
             res.json(devs);
         } catch (error) {
             res.status(500).json({ msg: error.message});
