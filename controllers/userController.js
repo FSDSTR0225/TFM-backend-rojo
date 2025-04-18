@@ -27,10 +27,10 @@ module.exports = {
 
   register: async (req, res) => {
     try {
-      const { name, surname, email, password, role, birthDate } = req.body; 
+      const { name, surname, email, password, roles, birthDate } = req.body; 
 
       // Validate required fields
-      if (!name || !surname || !password || !email || !role || !birthDate) { 
+      if (!name || !surname || !password || !email || !roles || !birthDate) { 
         res.status(400).json({ msg: 'Some required fields are missing' });
       }
 
@@ -49,7 +49,7 @@ module.exports = {
         surname, 
         email,
         password: hashedPassword,
-        role,
+        roles,
         birthDate,
       });
 
