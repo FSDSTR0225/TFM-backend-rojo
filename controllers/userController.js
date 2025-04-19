@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const User = require("../models/userModel");
+const generateToken = require("../utils/generateToken")
 
 module.exports = {
   login: async (req, res) => {
@@ -16,9 +17,11 @@ module.exports = {
         res.status(404).json({ msg: 'User does not exist' });
       }
       const { password: _, ...rest } = user.toObject();
+      const token = generateToken(user)
       res.status(200).json({
         msg: 'User logged in successfully',
         user: rest,
+        token,
       });
     } catch (err) {
       res.status(500).json(err);
