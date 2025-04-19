@@ -48,7 +48,7 @@ module.exports = {
         name, 
         surname, 
         email,
-        password: hashedPassword,
+        password: hashedPassword, 
         roles,
         birthDate,
       });

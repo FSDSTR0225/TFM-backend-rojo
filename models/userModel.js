@@ -10,17 +10,22 @@ const userSchema = new mongoose.Schema({
   avatar: { type: String },
   description: { type: String },
   roles: {
-    tipo: { type: String, required: true, enum: ['developer', 'recruiter'] },
+    type: { type: String, required: true, enum: ['developer', 'recruiter'] },
     developer: {
-      professionalPosition: { type: String },
-      languages: [
-        {
-        language: { type: String },
-        languagelevel: { type: String },
-        }
-      ],
-      skills: { type: Array },
-      experience: [
+        professionalPosition: { type: String },
+        location: { type: String },
+        instagram: { type: String },
+        linkedin: { type: String },
+        github: { type: String },
+        skills: { type: Array },
+        languages: [
+          {
+          language: { type: String },
+          languageLevel: { type: String },
+          }
+        ],
+        aboutme: { type: String },
+      experiences: [
         {
           company: { type: String },
           position: { type: String },
