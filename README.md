@@ -172,7 +172,7 @@ Todos los modelos incluyen timestamps automáticos (`createdAt` y `updatedAt`) p
 4. **Inicia el servidor:**
    * Modo desarrollo (con Nodemon):
    ```bash
-   npx nodemon index.js
+   npx nodemon
    ```
    * Modo producción:
    ```bash
@@ -231,34 +231,6 @@ Para el desarrollo de nuevas funcionalidades, corrección de errores o mejoras, 
 6. **Integración a main**:
    - Periódicamente, cuando `develop` tenga funcionalidades estables, se creará un PR desde `develop` a `main`
    - Este PR debe ser revisado y aprobado por al menos 2 miembros del equipo
-
-### Convenciones de Commits
-
-Para mantener el historial organizado, utilizaremos la siguiente estructura para los mensajes de commit:
-
-```
-[tipo]: descripción corta
-
-Descripción detallada si es necesaria
-```
-
-Donde `tipo` puede ser:
-- `feat`: Nueva funcionalidad
-- `fix`: Corrección de bug
-- `docs`: Cambios en documentación
-- `style`: Cambios que no afectan el significado del código (espacios, formato, etc.)
-- `refactor`: Código que no corrige bugs ni añade funcionalidades
-- `test`: Añadir o corregir tests
-- `chore`: Cambios en el proceso de build o herramientas auxiliares
-
-Ejemplo:
-```
-feat: implementa sistema de autenticación JWT
-
-- Añade generación de tokens
-- Configura middleware de verificación
-- Implementa expiración de tokens
-```
 
 ## 🔗 Enlaces Útiles
 
