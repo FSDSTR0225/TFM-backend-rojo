@@ -7,11 +7,12 @@ Backend para una plataforma de perfiles de desarrolladores y búsqueda de empleo
 1. [Descripción del Proyecto](#descripción-del-proyecto)
 2. [Tecnologías Utilizadas](#tecnologías-utilizadas)
 3. [Estructura del Proyecto](#estructura-del-proyecto)
-4. [Cómo Configurar el Proyecto](#cómo-configurar-el-proyecto)
-5. [Gestión de Ramas](#gestión-de-ramas)
-6. [Enlaces Útiles](#enlaces-útiles)
-7. [Contribuciones](#contribuciones)
-8. [Licencia](#licencia)
+4. [Modelos de Datos](#modelos-de-datos)
+5. [Cómo Configurar el Proyecto](#cómo-configurar-el-proyecto)
+6. [Gestión de Ramas](#gestión-de-ramas)
+7. [Enlaces Útiles](#enlaces-útiles)
+8. [Contribuciones](#contribuciones)
+9. [Licencia](#licencia)
 
 ## 📖 Descripción del Proyecto
 
@@ -52,6 +53,91 @@ tfm-backend-rojo/
 ├── README.md     # Documentación del proyecto
 └── index.js      # Punto de entrada de la aplicación
 ```
+
+## 💾 Modelos de Datos
+
+La aplicación utiliza MongoDB como base de datos NoSQL, implementando los siguientes modelos a través de Mongoose:
+
+### 👤 User Model (userModel.js)
+
+Modelo central que gestiona tanto usuarios desarrolladores como reclutadores.
+
+**Campos Base:**
+- `email`: String (único, requerido)
+- `password`: String (requerido)
+- `name`: String (requerido)
+- `surname`: String (requerido)
+- `birthDate`: Date (requerido)
+- `phone`: String
+- `avatar`: String
+- `description`: String
+
+**Roles Específicos:**
+
+1. **Developer:**
+   - `professionalPosition`: String
+   - `languages`: Array de objetos { language, languageLevel }
+   - `skills`: Array de tecnologías
+   - `experience`: Array de objetos
+     - `company`: String
+     - `position`: String
+     - `startDate`: Date
+     - `endDate`: Date
+   - `projects`: Referencias a Project
+   - `studies`: Array de objetos con información académica
+   - `registeredOffers`: Array de ofertas aplicadas
+
+2. **Recruiter:**
+   - `companyName`: String
+   - `logo`: String
+   - `description`: String
+   - `location`: String
+   - `sector`: String
+   - `website`: String
+   - `contact`: Array de información de contacto
+   - `createdOffers`: Referencias a Offer
+
+### 💼 Offer Model (offerModel.js)
+
+Modelo para gestionar ofertas de trabajo.
+
+**Campos Principales:**
+- `position`: String (requerido)
+- `role`: String
+- `location`: String
+- `contractType`: Array de String
+- `company`: String (requerido)
+- `salary`: Number
+- `skills`: Array de String
+- `description`: String
+- `language`: String
+- `status`: String (enum: ['active', 'closed', 'draft'])
+
+**Relaciones:**
+- `owner`: Referencia al User (recruiter) que creó la oferta
+- `applicants`: Array de objetos
+  - `user`: Referencia al User (developer)
+  - `appliedDate`: Date
+  - `status`: String (enum: ['pending', 'reviewed', 'interviewed', 'rejected', 'accepted'])
+
+### 🔨 Project Model (projectModel.js)
+
+Modelo para gestionar proyectos de desarrolladores.
+
+**Campos:**
+- `name`: String
+- `description`: String
+- `urls`: Array
+- `technologiesUsed`: Array de String
+- `duration`: String
+- `type`: Array de String
+- `date`: Date
+- `multimedia`: String
+
+**Relaciones:**
+- `owner`: Referencia al User (developer) que creó el proyecto
+
+Todos los modelos incluyen timestamps automáticos (`createdAt` y `updatedAt`) para seguimiento temporal.
 
 ## ⚙️ Cómo Configurar el Proyecto
 
