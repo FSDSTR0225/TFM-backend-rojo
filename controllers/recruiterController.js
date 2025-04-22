@@ -23,15 +23,18 @@ module.exports = {
 
     updateRecruiterProfile:async(req,res)=>{
         try{
+            console.log("Usuario autenticado:", req.user); // Log del usuario autenticado
+    console.log("Datos recibidos del frontend:", req.body); // Log de los datos recibidos
+            const userId = req.user.id;
             const datosRecruiter = req.body;
             console.log('Datos obtenidos del Front: ', datosRecruiter);
             if(!datosRecruiter) return res.status(400).json({ msg: 'Some required fields are missing' });
-            const recruiter = await Recruiter.findByIdAndUpdate(req.params.id,
+            const recruiter = await Recruiter.findByIdAndUpdate(userId,
                 {"roles.recruiter":datosRecruiter},
                 {new:true});
-            res.status(200).json({msg:'Recruiter updated', recruiter});
+           return res.status(200).json({msg:'Recruiter updated', recruiter});
         }catch(error){
-            res.status(500).json({ msg: error.message});
+           return  res.status(500).json({ msg: error.message});
         }
     }
 }
