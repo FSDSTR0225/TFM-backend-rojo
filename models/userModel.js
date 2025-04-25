@@ -24,7 +24,6 @@ const userSchema = new mongoose.Schema({
           languageLevel: { type: String },
           }
         ],
-        aboutme: { type: String },
       experiences: [
         {
           company: { type: String },
