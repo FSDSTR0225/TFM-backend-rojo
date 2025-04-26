@@ -18,8 +18,27 @@ module.exports = {
         } catch (error) {
             res.status(500).json({ msg: error.message});
         }
-    }
+    },
 
+    createProject:async(req, res)=>{
+        try {
+            const project = req.body;
+            console.log('Valor del frontEnd: ',project);
+            const newProject = new Project(project);
+            await newProject.save();
+            res.json({project: newProject, msg: 'Proyecto creado correctamente'});
+        } catch (error) {
+            res.status(500).json({ msg: error.message});
+        }
+    },
+
+    updateProject:async(req,res)=>{
+        try {
+            
+        } catch (error) {
+            res.status(500).json({ msg: error.message});
+        }
+    }
 
 }
 
