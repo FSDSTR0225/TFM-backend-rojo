@@ -30,7 +30,7 @@ module.exports = {
             console.log('Datos obtenidos del Front: ', datosRecruiter);
             if(!datosRecruiter) return res.status(400).json({ msg: 'Some required fields are missing' });
             const recruiter = await Recruiter.findByIdAndUpdate(userId,
-                {"roles.recruiter":datosRecruiter},
+                {"roles.recruiter": datosRecruiter},
                 {new:true});
            return res.status(200).json({msg:'Recruiter updated', recruiter});
         }catch(error){
