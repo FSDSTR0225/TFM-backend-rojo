@@ -12,7 +12,9 @@ const devRouter = require("./routes/devRouter");
 //Configuraciones
 const app = express();
 const port = process.env.PORT;
+const cors = require('cors');
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
