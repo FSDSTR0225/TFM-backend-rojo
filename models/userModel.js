@@ -22,9 +22,14 @@ const userSchema = new mongoose.Schema({
         {
           language: { type: String },
           languageLevel: { type: String },
+<<<<<<< HEAD
         }
       ],
       aboutme: { type: String },
+=======
+          }
+        ],
+>>>>>>> 67ffd4ca951dcdcbdf4d8e5cc6bcaa696fe6f3c3
       experiences: [
         {
           company: { type: String },
