@@ -10,7 +10,7 @@ const offerSchema = new mongoose.Schema({
   skills: [{ type: String }],
   description: { type: String },
   language: { type: String },
-  deleteIt: { type: Date },
+  deleteAt: { type: Date },
   status: { type: String, enum: ['active', 'closed', 'draft'], default: 'active' },
 
   // Reference to the recruiter who created the offer
@@ -31,7 +31,7 @@ const offerSchema = new mongoose.Schema({
           type: String, 
           enum: ['pending', 'reviewed', 'interviewed', 'rejected', 'accepted'], 
           default: 'pending' 
-      },
+      }
   }]
 }, {
   timestamps: true

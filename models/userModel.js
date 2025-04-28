@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true }, 
+  password: { type: String, required: true },
   name: { type: String, required: true },
   surname: { type: String, required: true },
   birthDate: { type: String, required: true },
@@ -12,26 +12,31 @@ const userSchema = new mongoose.Schema({
   roles: {
     type: { type: String, required: true, enum: ['developer', 'recruiter'] },
     developer: {
-        professionalPosition: { type: String },
-        location: { type: String },
-        instagram: { type: String },
-        linkedin: { type: String },
-        github: { type: String },
-        skills: { type: Array },
-        languages: [
-          {
+      professionalPosition: { type: String },
+      location: { type: String },
+      instagram: { type: String },
+      linkedin: { type: String },
+      github: { type: String },
+      skills: [{ type: String }],
+      languages: [
+        {
           language: { type: String },
           languageLevel: { type: String },
+<<<<<<< HEAD
+        }
+      ],
+      aboutme: { type: String },
+=======
           }
         ],
-        aboutme: { type: String },
+>>>>>>> 67ffd4ca951dcdcbdf4d8e5cc6bcaa696fe6f3c3
       experiences: [
         {
           company: { type: String },
           position: { type: String },
           startDate: { type: Date },
           endDate: { type: Date },
-        },
+        }
       ],
       projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }],
       studies: [
@@ -43,32 +48,37 @@ const userSchema = new mongoose.Schema({
           description: { type: String },
           location: { type: String },
           multimedia: { type: String },
-        },
+        }
       ],
       registeredOffers: [
         {
           offer: { type: mongoose.Schema.Types.ObjectId, ref: 'Offer' },
           appliedDate: { type: Date, default: Date.now },
-          status: { type: String, enum: ['pending', 'reviewed', 'interviewed', 'rejected', 'accepted'], default: 'pending' },
+          status: {
+            type: String,
+            enum: ['pending', 'reviewed', 'interviewed', 'rejected', 'accepted'],
+            default: 'pending',
+          },
         }
       ]
     },
     recruiter: {
-          logo: { type: String },
-          companyName: { type: String },
-          description: { type: String },
-          location: { type: String },
-          sector: { type: String },
-          website: { type: String },
-          contact: [
-              {
-                  email: { type: String },
-                  phone: { type: String },
-              }
-          ],
-          multimedia: { type: String }
-      },
-    createdOffers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Offer' }]
+      logo: { type: String },
+      companyName: { type: String },
+      description: { type: String },
+      location: { type: String },
+      sector: { type: String },
+      website: { type: String },
+      contact: [
+        {
+          email: { type: String },
+          phone: { type: String },
+        }
+      ],
+      multimedia: { type: String },
+      createdOffers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Offer' }],
+    },
+    
   },
 }, {
   timestamps: true,
