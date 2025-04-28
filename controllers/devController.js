@@ -70,12 +70,13 @@ module.exports = {
           }
         }
       }
-        await user.save();
-    
-        res.status(201).json(user);
-      } catch (error) {
-        res.status(500).json({ msg: error.message });
-      }
+      await User.findByIdAndUpdate(_id, updatedUser, { new: true });
+
+
+      res.status(200).json({ msg: 'Developer profile updated successfully', user: updatedUser });
+    } catch (error) {
+      res.status(500).json({ msg: error.message });
     }
-      
+},
+
 }
