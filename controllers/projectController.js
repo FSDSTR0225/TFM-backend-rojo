@@ -22,8 +22,8 @@ module.exports = {
 
     createProject: async (req, res) => {
         try {
-            const userId = req.user.id; // Recoge el id del usuario
-            const project = { ...req.body, owner: userId }; //Recoge los datos del usuario y le añade el id del dueño de la tarea.
+            const userId = req.user.id;
+            const project = { ...req.body, owner: userId };
             console.log('Frontend value: ', project);
             const newProject = new Project(project);
             await newProject.save();
@@ -35,26 +35,26 @@ module.exports = {
 
     updateProject: async (req, res) => {
         try {
-            const projectId = req.params.id; //Recoge el id del proyecto
-            const userId = req.user.id; // Recoge el id del usuario
-            const projectNewData = req.body; // Recoge los datos del body para pasar al backend
+            const projectId = req.params.id;
+            const userId = req.user.id;
+            const projectNewData = req.body;
     
-            const project = await Project.findById(projectId); // Encuentra la tarea por el id de la tarea
+            const project = await Project.findById(projectId);
             if (!project) {
                 return res.status(404).json({ msg: 'Project not found' });
             }
     
-            if (project.owner.toString() !== userId) { //Comprueba que corresponda con el id del usuario y, si no es el mismo, no puede actualizar el proyecto
+            if (project.owner.toString() !== userId) { 
                 return res.status(403).json({ msg: 'You are not authorized to update this project' });
             }
     
-            const updatedProject = await Project.findByIdAndUpdate( //actualiza el proyecto
-                projectId, // toma el id del proyecto
-                { ...projectNewData }, // le mete los nuevos datos
+            const updatedProject = await Project.findByIdAndUpdate( 
+                projectId, 
+                { ...projectNewData }, 
                 { new: true }
             );
     
-            return res.status(200).json({ msg: 'Project updated successfully', updatedProject }); //devuelve los datos actualizados
+            return res.status(200).json({ msg: 'Project updated successfully', updatedProject }); 
             
         } catch (error) {
             return res.status(500).json({ msg: error.message });
