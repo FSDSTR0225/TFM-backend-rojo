@@ -20,30 +20,46 @@ module.exports = {
         }
     },
 
-    createProject:async(req, res)=>{
+    createProject: async (req, res) => {
         try {
-            const project = req.body;
-            console.log('Valor del frontEnd: ',project);
+            const userId = req.user.id;
+            const project = { ...req.body, owner: userId };
+            console.log('Frontend value: ', project);
             const newProject = new Project(project);
             await newProject.save();
-            res.json({project: newProject, msg: 'Project created successfully'});
+            res.json({ project: newProject, msg: 'Project created successfully' });
         } catch (error) {
-            res.status(500).json({ msg: error.message});
+            res.status(500).json({ msg: error.message });
         }
     },
 
-    updateProject:async(req,res)=>{
+    updateProject: async (req, res) => {
         try {
-            const project = req.body;
-            // const userId = req.params.id;
-            // if(!userId) return res.status(400).json({ msg: 'User not found' });
-            if(!project) return res.status(400).json({ msg: 'Some required fields are missing' });
-            if(!project._id) return res.status(400).json({ msg: 'Project not found' });
-            const projectUpdate = await Project.findByIdAndUpdate(project._id,project,{new:true});
-            res.json({project: projectUpdate, msg: 'Project update successfully'});
+            const projectId = req.params.id;
+            const userId = req.user.id;
+            const projectNewData = req.body;
+    
+            const project = await Project.findById(projectId);
+            if (!project) {
+                return res.status(404).json({ msg: 'Project not found' });
+            }
+    
+            if (project.owner.toString() !== userId) { 
+                return res.status(403).json({ msg: 'You are not authorized to update this project' });
+            }
+    
+            const updatedProject = await Project.findByIdAndUpdate( 
+                projectId, 
+                { ...projectNewData }, 
+                { new: true }
+            );
+    
+            return res.status(200).json({ msg: 'Project updated successfully', updatedProject }); 
+            
         } catch (error) {
-            res.status(500).json({ msg: error.message});
+            return res.status(500).json({ msg: error.message });
         }
     }
 
-}
+}   
+    
