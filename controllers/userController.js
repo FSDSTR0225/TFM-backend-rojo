@@ -30,10 +30,10 @@ module.exports = {
 
   register: async (req, res) => {
     try {
-      const { name, surname, email, password, roles, birthDate } = req.body; 
-
+      const { name, email, password, rol } = req.body; 
+       console.log(req.body);
       // Validate required fields
-      if (!name || !surname || !password || !email || !roles || !birthDate) { 
+      if (!name || !password || !email || !rol) { 
         return res.status(400).json({ msg: 'Some required fields are missing' });
       }
       // Check if the user already exists
@@ -47,12 +47,12 @@ module.exports = {
 
       // Create a new user
       const newUser = new User({
-        name, 
-        surname, 
+        name,
         email,
         password: hashedPassword, 
-        roles,
-        birthDate,
+        rol:{
+          type:rol
+        },
       });
 
       // Save the user

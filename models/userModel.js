@@ -4,12 +4,12 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   name: { type: String, required: true },
-  surname: { type: String, required: true },
-  birthDate: { type: String, required: true },
+  surname: { type: String },
+  birthDate: { type: String },
   phone: { type: String },
   avatar: { type: String },
   description: { type: String },
-  roles: {
+  rol: {
     type: { type: String, required: true, enum: ['developer', 'recruiter'] },
     developer: {
       professionalPosition: { type: String },
