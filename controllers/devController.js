@@ -3,27 +3,27 @@ const User = require('../models/userModel'); // Asegúrate de que la ruta sea co
 
 
 module.exports = {
-//Desestructurar para no mostrar contraseña
-    getDevs : async (req,res) => {
-        try {
-            const devs = await User.find({"roles.type": "developer"});
-            res.json(devs);
-        } catch (error) {
-            res.status(500).json({ msg: error.message});
-        }
-    },
-
-    //Este código nos muestra el perfil de cada dev
-    getDevById : async (req,res) => {
-        try {
-            const dev = await User.findById(req.params.id);
-            res.json(dev);
-        } catch (error) {
-            res.status(500).json({ msg: error.message});
-        }
-    },
-
-    updateDevProfile: async (req, res) => {
+  //Desestructurar para no mostrar contraseña
+      getDevs : async (req,res) => {
+          try {
+              const devs = await User.find({"roles.type": "developer"});
+              res.json(devs);
+          } catch (error) {
+              res.status(500).json({ msg: error.message});
+          }
+      },
+  
+      //Este código nos muestra el perfil de cada dev
+      getDevById : async (req,res) => {
+          try {
+              const dev = await User.findById(req.params.id);
+              res.json(dev);
+          } catch (error) {
+              res.status(500).json({ msg: error.message});
+          }
+      },
+  
+      updateDevProfile: async (req, res) => {
         try {
           const {
             _id,
@@ -34,7 +34,7 @@ module.exports = {
             github,
             skills,
             languages,
-            aboutme
+            description,
           } = req.body;
       
           if (
@@ -55,8 +55,11 @@ module.exports = {
           if (user.roles.type !== 'developer') {
             return res.status(400).json({ msg: 'User must have the role of "developer"' });
           }
-      
-          user.roles.developer = {
+  
+        const updatedUser= {...user, 
+          description,
+          roles: {
+            developer: {
             professionalPosition,
             location,
             instagram,
@@ -64,9 +67,9 @@ module.exports = {
             github,
             skills,
             languages,
-            aboutme,
-          };
-      
+            }
+          }
+        }
           await user.save();
       
           res.status(201).json(user);
@@ -74,6 +77,4 @@ module.exports = {
           res.status(500).json({ msg: error.message });
         }
       }
-      
-      
 }
