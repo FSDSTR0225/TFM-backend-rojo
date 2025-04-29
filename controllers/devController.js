@@ -47,17 +47,17 @@ updateDevProfile: async (req, res) => {
       return res.status(404).json({ msg: 'User not found' });
     }
 
-    if (!user.roles || !user.roles.type) {
+    if (!user.role || !user.role.type) {
       return res.status(400).json({ msg: 'User role type is missing' });
     }
 
-    if (user.roles.type !== 'developer') {
+    if (user.role.type !== 'developer') {
       return res.status(400).json({ msg: 'User must have the role of "developer"' });
     }
 
   const updatedUser= {...user, 
     description,
-    roles: {
+    role: {
       developer: {
       professionalPosition,
       location,
@@ -71,11 +71,10 @@ updateDevProfile: async (req, res) => {
   }
   await User.findByIdAndUpdate(_id, updatedUser, { new: true });
 
-
   res.status(200).json({ msg: 'Developer profile updated successfully', user: updatedUser });
-} catch (error) {
-  res.status(500).json({ msg: error.message });
-}
-},
+    } catch (error) {
+    res.status(500).json({ msg: error.message });
+    }
+  },
 
 }
