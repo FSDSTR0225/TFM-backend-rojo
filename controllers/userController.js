@@ -51,7 +51,7 @@ module.exports = {
         email,
         password: hashedPassword, 
         role:{
-          type:rol
+          type:role
         },
       });
 
