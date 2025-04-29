@@ -5,6 +5,6 @@ const isAuthenticated = require('../middlewares/auth/isAutenticated');
 
 router.get('/', devController.getDevs);
 router.get('/:id', devController.getDevById);
-router.put('/profile', devController.updateDevProfile);
+router.put('/profile/:id', devController.updateDevProfile);
 
-module.exports = router
+module.exports = router;

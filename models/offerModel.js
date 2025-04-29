@@ -31,7 +31,7 @@ const offerSchema = new mongoose.Schema({
           type: String, 
           enum: ['pending', 'reviewed', 'interviewed', 'rejected', 'accepted'], 
           default: 'pending' 
-      },
+      }
   }]
 }, {
   timestamps: true
