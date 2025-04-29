@@ -30,10 +30,10 @@ module.exports = {
 
   register: async (req, res) => {
     try {
-      const { name, email, password, rol } = req.body; 
+      const { name, email, password, role } = req.body; 
        console.log(req.body);
       // Validate required fields
-      if (!name || !password || !email || !rol) { 
+      if (!name || !password || !email || !role) { 
         return res.status(400).json({ msg: 'Some required fields are missing' });
       }
       // Check if the user already exists
@@ -50,7 +50,7 @@ module.exports = {
         name,
         email,
         password: hashedPassword, 
-        rol:{
+        role:{
           type:rol
         },
       });

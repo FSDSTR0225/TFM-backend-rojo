@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
   phone: { type: String },
   avatar: { type: String },
   description: { type: String },
-  rol: {
+  role: {
     type: { type: String, required: true, enum: ['developer', 'recruiter'] },
     developer: {
         professionalPosition: { type: String },
