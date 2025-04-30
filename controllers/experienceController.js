@@ -3,10 +3,19 @@ const User = require('../models/userModel');
 
 module.exports = {
 
-createExperiences: async(req, res)=>{
+getExperiences : async (req,res) => {
     try {
-      const userId = req.user.id
-      const {company, position, startDate, endDate, owner: userId} = req.body
+        const experiences = await User.find({});
+        res.json(experiences);
+    } catch (error) {
+        res.status(500).json({ msg: ""});
+    }
+},
+
+createExperience: async(req, res)=>{
+    try {
+      const userId = req.user.id;
+      const {company, position, startDate, endDate} = req.body;
 
       const experience = await User.create({
         company, position, startDate, endDate, owner: userId
@@ -21,20 +30,20 @@ createExperiences: async(req, res)=>{
   }
 },
 
-    updateExperiences: async(req, res) => {
-        try {
-            const experienceId = req.params.id
-            const userId = req.user.id
-            const experienceNewData = req.body
-            const experience = await User.findById(experienceId)
-            if (!experience) {
-                return res.status(404).json({ msg: 'Experience not found' });
-              }
-            if(experience.owner.toString() !== userId ) return res.status(403).json({ msg: 'Some required fields are missing' })
-            const updatedExperience = await User.findByIdAndUpdate(experienceId, {...experienceNewData}, {new:true})
-            return res.status(200).json({msg:'Experience updated', updatedExperience})
-        } catch (error) {
-            return  res.status(500).json({ msg: error.message});
+updateExperience: async(req, res) => {
+    try {
+        const experienceId = req.params.id
+        const userId = req.user.id
+        const experienceNewData = req.body
+        const experience = await User.findById(experienceId)
+        if (!experience) {
+            return res.status(404).json({ msg: 'Experience not found' });
         }
+        if(experience.owner.toString() !== userId ) return res.status(403).json({ msg: 'Some required fields are missing' })
+        const updatedExperience = await User.findByIdAndUpdate(experienceId, {...experienceNewData}, {new:true})
+        return res.status(200).json({msg:'Experience updated', updatedExperience})
+    } catch (error) {
+        return  res.status(500).json({ msg: error.message});
+    }
     }
 }
