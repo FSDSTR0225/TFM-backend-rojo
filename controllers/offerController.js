@@ -17,7 +17,7 @@ module.exports = {
             //Filtrado por no borradas
             const offer = await Offer.findOne({_id: req.params.id , isDelete:false}).populate({
                 path: 'owner',
-                select: 'name, logo, companyName, website, '
+                select: 'name, logo, companyName, website, contact '
             });
             if (!offer) {
                 return res.status(404).json({ msg: 'Offer not found' });
