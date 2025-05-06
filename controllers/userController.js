@@ -30,7 +30,7 @@ module.exports = {
 
   register: async (req, res) => {
     try {
-      const { name, email, password, role } = req.body; 
+      const { name, surname, email, password, role } = req.body; 
        console.log(req.body);
       // Validate required fields
       if (!name || !password || !email || !role) { 
@@ -48,6 +48,7 @@ module.exports = {
       // Create a new user
       const newUser = new User({
         name,
+        surname,
         email,
         password: hashedPassword, 
         role:{
