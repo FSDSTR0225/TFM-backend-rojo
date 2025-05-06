@@ -11,4 +11,6 @@ router.post('/', isAuthenticated, offerController.createOffer)
 
 router.put('/:id', isAuthenticated, offerController.updateOffer)
 
+router.patch('/:id/delete', isAuthenticated, offerController.deleteOffer)
+
 module.exports = router;

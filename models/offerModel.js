@@ -10,7 +10,8 @@ const offerSchema = new mongoose.Schema({
   skills: [{ type: String }],
   description: { type: String },
   language: { type: String },
-  deleteAt: { type: Date },
+  isDelete: {type: Boolean, default: false},
+  deleteAt: { type: Date, default: null },
   status: { type: String, enum: ['active', 'closed', 'draft'], default: 'active' },
 
   // Reference to the recruiter who created the offer
