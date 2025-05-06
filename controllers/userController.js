@@ -4,6 +4,17 @@ const User = require("../models/userModel");
 const generateToken = require("../utils/generateToken")
 
 module.exports = {
+
+
+  getUsers: async (req, res) => {
+    try {
+      const users = await User.find();
+      return res.status(200).json(users);
+    } catch (err) {
+      return res.status(500).json(err);
+    }
+  },
+
   login: async (req, res) => {
     try {
       let email = req.body.email;
