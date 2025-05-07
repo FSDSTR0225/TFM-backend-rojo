@@ -24,26 +24,9 @@ const userSchema = new mongoose.Schema({
           languageLevel: { type: String },
         }
       ],
-      experiences: [
-        {
-          company: { type: String },
-          position: { type: String },
-          startDate: { type: Date },
-          endDate: { type: Date },
-        }
-      ],
+      experiences: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Experience' }],
       projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }],
-      studies: [
-        {
-          instituteName: { type: String },
-          startDate: { type: Date },
-          endDate: { type: Date },
-          degree: { type: String },
-          description: { type: String },
-          location: { type: String },
-          multimedia: { type: String },
-        }
-      ],
+      studies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Study' }],
       registeredOffers: [
         {
           offer: { type: mongoose.Schema.Types.ObjectId, ref: 'Offer' },
