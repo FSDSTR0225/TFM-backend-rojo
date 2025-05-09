@@ -16,9 +16,9 @@ module.exports = {
 getDevById : async (req,res) => {
     try {
         const dev = await User.findById(req.params.id);
-        res.json(dev);
+        return res.json(dev);
     } catch (error) {
-        res.status(500).json({ msg: error.message});
+        return res.status(500).json({ msg: error.message});
     }
 },
 
