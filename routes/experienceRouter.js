@@ -3,7 +3,7 @@ const router = express.Router();
 const experienceController = require('../controllers/experienceController');
 const isAuthenticated = require('../middlewares/auth/isAutenticated');
 
-router.get('/', isAuthenticated, experienceController.getExperiences);
+router.get('/', experienceController.getExperiences);
 
 router.post('/', isAuthenticated, experienceController.createExperience);
 

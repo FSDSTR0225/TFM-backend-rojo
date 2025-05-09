@@ -21,6 +21,7 @@ module.exports = {
       let password = req.body.password;
 
       let user = await User.findOne({ email: email });
+
       if (!user) {
         return res.status(404).json({ msg: 'User does not exist' });
       }
@@ -28,7 +29,7 @@ module.exports = {
        return res.status(404).json({ msg: 'User does not exist' });
       }
       const { password: _, ...rest } = user.toObject();
-      const token = generateToken(user)
+      const token = generateToken(rest);
       return res.status(200).json({
         msg: 'User logged in successfully',
         user: rest,
@@ -41,10 +42,10 @@ module.exports = {
 
   register: async (req, res) => {
     try {
-      const { name, email, password, role } = req.body; 
+      const { name, surname, email, password, role } = req.body; 
        console.log(req.body);
       // Validate required fields
-      if (!name || !password || !email || !role) { 
+      if (!name || !surname || !password || !email || !role) { 
         return res.status(400).json({ msg: 'Some required fields are missing' });
       }
       // Check if the user already exists
@@ -59,6 +60,7 @@ module.exports = {
       // Create a new user
       const newUser = new User({
         name,
+        surname,
         email,
         password: hashedPassword, 
         role:{
@@ -76,5 +78,19 @@ module.exports = {
     } catch (error) {
       res.status(500).json(error.message);
     }
+  },
+
+
+  getUserProfile:async(req,res)=>{
+    try {
+      const userId = req.user.id;
+      const user = await User.findById(userId);
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
   }
+
+
+
 };

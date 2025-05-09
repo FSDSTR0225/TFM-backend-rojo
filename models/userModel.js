@@ -63,16 +63,14 @@ const userSchema = new mongoose.Schema({
       location: { type: String },
       sector: { type: String },
       website: { type: String },
-      contact: [
-        {
-          email: { type: String },
-          phone: { type: String },
-        }
-      ],
+      contact: {
+        email: { type: String },
+        phone: { type: String },
+      },
       multimedia: { type: String },
       createdOffers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Offer' }],
     },
-    
+
   },
 }, {
   timestamps: true,
