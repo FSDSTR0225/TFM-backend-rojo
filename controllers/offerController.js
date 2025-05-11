@@ -32,24 +32,26 @@ module.exports = {
         try {
             const userId = req.user.id
             const {position, role, location, contractType, company, salary, skills, description, language} = req.body
-        
+            const salaryNumber = parseInt(salary);
+            const skillsArray = skills ? skills.split(",").map(skill => skill.trim()) : [];
+            
          // 3. Validar longitud mínima
         if (description.length < 10) {
-            return res.status(400).json({ msg: 'La descripción debe tener al menos 10 caracteres' });
+            return res.status(400).json({ msg: 'La descripción  debe tener al menos 10 caracteres' });
         }
 
         // 4. Validar salario (número positivo)
-        if (typeof salary !== 'number' || salary <= 0) {
+        if (typeof salaryNumber !== 'number' || salaryNumber <= 0) {
             return res.status(400).json({ msg: 'El salario debe ser un número mayor que 0' });
         }
 
         // 5. Validar skills (debe ser array y con mínimo 1 skill)
-        if (!Array.isArray(skills) || skills.length === 0) {
+        if (!Array.isArray(skillsArray) || skillsArray.length === 0) {
             return res.status(400).json({ msg: 'Debes incluir al menos una habilidad' });
         }
 
             const offer = await Offer.create({
-                position, role, location, contractType, company, salary, skills, description, language, owner: userId
+                position, role, location, contractType, company, salaryNumber, skills, description, language, owner: userId
             })
             res.status(201).json({
                 msg: 'Offer created successfully',
