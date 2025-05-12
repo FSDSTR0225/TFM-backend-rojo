@@ -5,7 +5,10 @@ module.exports = {
     getOffers : async (req,res) => {
         try {
             //Filtrado por no borradas
-            const offers = await Offer.find({isDelete: false});
+            const offers = await Offer.find({isDelete: false}).populate({
+                path: 'owner',
+                select: '_id name role.type role.recruiter.logo'
+            });
             res.json(offers);
         } catch (error) {
             res.status(500).json({ msg: "Ningun registro de ofertas"});
@@ -15,7 +18,10 @@ module.exports = {
     getOfferById : async (req,res) => {
         try {
             //Filtrado por no borradas
-            const offer = await Offer.findOne({_id: req.params.id , isDelete:false});
+            const offer = await Offer.findOne({_id: req.params.id , isDelete:false}).populate({
+                path: 'owner',
+                select: '_id name role.type role.recruiter.logo role.recruiter.companyName role.recruiter.website role.recruiter.contact'
+            });
             if (!offer) {
                 return res.status(404).json({ msg: 'Offer not found' });
               }
@@ -29,24 +35,26 @@ module.exports = {
         try {
             const userId = req.user.id
             const {position, role, location, contractType, company, salary, skills, description, language} = req.body
-        
+            const salaryNumber = parseInt(salary);
+            const skillsArray = skills ? skills.split(",").map(skill => skill.trim()) : [];
+            
          // 3. Validar longitud mínima
         if (description.length < 10) {
-            return res.status(400).json({ msg: 'La descripción debe tener al menos 10 caracteres' });
+            return res.status(400).json({ msg: 'La descripción  debe tener al menos 10 caracteres' });
         }
 
         // 4. Validar salario (número positivo)
-        if (typeof salary !== 'number' || salary <= 0) {
+        if (typeof salaryNumber !== 'number' || salaryNumber <= 0) {
             return res.status(400).json({ msg: 'El salario debe ser un número mayor que 0' });
         }
 
         // 5. Validar skills (debe ser array y con mínimo 1 skill)
-        if (!Array.isArray(skills) || skills.length === 0) {
+        if (!Array.isArray(skillsArray) || skillsArray.length === 0) {
             return res.status(400).json({ msg: 'Debes incluir al menos una habilidad' });
         }
 
             const offer = await Offer.create({
-                position, role, location, contractType, company, salary, skills, description, language, owner: userId
+                position, role, location, contractType, company, salaryNumber, skills, description, language, owner: userId
             })
             res.status(201).json({
                 msg: 'Offer created successfully',

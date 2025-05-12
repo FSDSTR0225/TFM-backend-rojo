@@ -7,10 +7,10 @@ router.get('/', offerController.getOffers);
 
 router.get('/:id', offerController.getOfferById);
 
-router.post('/', isAuthenticated, offerController.createOffer)
+router.post('/', isAuthenticated, offerController.createOffer);
 
-router.put('/:id', isAuthenticated, offerController.updateOffer)
+router.put('/:id', isAuthenticated, offerController.updateOffer);
 
-router.patch('/:id/delete', isAuthenticated, offerController.deleteOffer)
+router.patch('/:id/delete', isAuthenticated, offerController.deleteOffer);
 
 module.exports = router;
