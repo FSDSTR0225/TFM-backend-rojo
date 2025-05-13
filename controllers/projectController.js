@@ -4,8 +4,9 @@ const Project = require('../models/projectModel');
 module.exports = {
     getProjects : async (req,res) => {
         try {
-            const projects = await Project.find()
-            .populate('owner', 'name surname avatar'); // <- populate con los campos necesarios
+        const projects = await Project.find({ isDeleted: { $ne: true } })
+        .populate('owner', 'name surname avatar');
+
           res.json(projects);
         } catch (error) {
             res.status(500).json({ msg: error.message});
@@ -61,10 +62,39 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({ msg: error.message });
         }
-    }
+    },
 
+    deleteProject: async (req, res) => {
+        try {
+            const projectId = req.params.id;
+            const userId = req.user.id;
+
+            const project = await Project.findById(projectId);
+
+            if (!project) {
+                return res.status(404).json({ msg: 'Project not found' });
+            }
+
+            if (project.owner.toString() !== userId) {
+                return res.status(403).json({ msg: 'You are not authorized to delete this project' });
+            }
+
+            const updatedProject = await Project.findByIdAndUpdate(
+                projectId,
+                { isDeleted: true, deletedAt: new Date() },
+                { new: true }
+            );
+
+            return res.status(200).json({ msg: 'Project deleted (soft delete)', updatedProject });
+
+        } catch (error) {
+            return res.status(500).json({ msg: error.message });
+        }
+    }
 }   
-    
+
+
+
 
 
 
