@@ -4,7 +4,7 @@ const Recruiter = require('../models/userModel');
 module.exports = {
     getRecruiters: async (req, res) => {
         try {
-            const recruiters = await Recruiter.find({ "roles.type": "recruiter" });
+            const recruiters = await Recruiter.find({ "role.type": "recruiter" });
             res.json(recruiters);
 
         } catch (error) {
