@@ -15,12 +15,22 @@ module.exports = {
         }
     },
 
+    getOffersByOwner : async (req,res) => {
+        try {
+            const owner = req.params.id
+            const offers = await Offer.find({owner: owner, isDelete: false})
+            res.json(offers);
+        } catch (error) {
+            res.status(500).json({ msg: "Ningun registro de ofertas"});
+        }
+    },
+
     getOfferById : async (req,res) => {
         try {
             //Filtrado por no borradas
             const offer = await Offer.findOne({_id: req.params.id , isDelete:false}).populate({
                 path: 'owner',
-                select: '_id name surname role.type role.recruiter.logo role.recruiter.companyName role.recruiter.website role.recruiter.contact'
+                select: '_id name surname role.type role.recruiter.logo role.recruiter.companyName role.recruiter.company role.recruiter.website role.recruiter.contact'
             });
             if (!offer) {
                 return res.status(404).json({ msg: 'Offer not found' });
