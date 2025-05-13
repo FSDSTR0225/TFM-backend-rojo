@@ -32,7 +32,6 @@ module.exports = {
       const token = generateToken(rest);
       return res.status(200).json({
         msg: 'User logged in successfully',
-        user: rest,
         token,
       });
     } catch (err) {
