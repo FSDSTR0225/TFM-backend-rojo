@@ -7,6 +7,7 @@ const isAuthenticated = (req, res , next) =>{
         return res.status(401).json({msg: "No estás autenticado"})
     }
     const token = authHeader.split(" ")[1]
+    console.log("🚀 ~ isAuthenticated ~ token:", token)
     console.log("Token extraído:", token);
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
