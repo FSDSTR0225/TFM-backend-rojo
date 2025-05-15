@@ -5,7 +5,7 @@ const User = require('../models/userModel'); // Asegúrate de que la ruta sea co
 module.exports = {
   getDevs : async (req,res) => {
     try {
-        const devs = await User.find({"roles.type": "developer"});
+        const devs = await User.find({"role.type": "developer"});
         res.json(devs);
     } catch (error) {
         res.status(500).json({ msg: error.message});
