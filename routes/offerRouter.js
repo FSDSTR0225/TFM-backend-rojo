@@ -5,6 +5,8 @@ const isAuthenticated = require('../middlewares/auth/isAutenticated');
 
 router.get('/', offerController.getOffers);
 
+router.get('/technology', offerController.getTechnology);
+
 router.get('/:id', offerController.getOfferById);
 
 router.post('/', isAuthenticated, offerController.createOffer);
