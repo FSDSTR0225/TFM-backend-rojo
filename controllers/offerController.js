@@ -15,6 +15,19 @@ module.exports = {
         }
     },
 
+    getOffersByOwner : async (req,res) => {
+        try {
+            const owner = req.params.id
+            const offers = await Offer.find({owner: owner, isDelete: false}).populate({
+                path: 'owner',
+                select: '_id name surname role.type role.recruiter.logo'
+            });
+            res.json(offers);
+        } catch (error) {
+            res.status(500).json({ msg: "Ningun registro de ofertas"});
+        }
+    },
+
     getOfferById: async (req, res) => {
         try {
             //Filtrado por no borradas
