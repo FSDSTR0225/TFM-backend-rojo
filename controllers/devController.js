@@ -34,13 +34,15 @@ updateDevProfile: async (req, res) => {
       skills,
       languages,
       description,
+      name,
+      surname,
     } = req.body;
-
-    if (
-      !_id || !professionalPosition || !location || !skills || !languages 
-    ) {
-      return res.status(400).json({ msg: 'Some required fields are missing' });
-    }
+    
+    // if (
+    //   !_id || !professionalPosition || !location || !skills || !languages 
+    // ) {
+    //   return res.status(400).json({ msg: 'Some required fields are missing' });
+    // }
 
     const user = await User.findById(_id);
     if (!user) {
@@ -55,21 +57,25 @@ updateDevProfile: async (req, res) => {
       return res.status(400).json({ msg: 'User must have the role of "developer"' });
     }
 
-  const updatedUser= {...user, 
-    description,
-    role: {
-      developer: {
-      professionalPosition,
-      location,
-      instagram,
-      linkedin,
-      github,
-      skills,
-      languages,
+const updatedFields = {
+      name,
+      surname,
+      description,
+      role: {
+        ...user.role,
+        developer: {
+          ...user.role.developer,
+          professionalPosition,
+          location,
+          instagram,
+          linkedin,
+          github,
+          skills,
+          languages
+        }
       }
-    }
-  }
-  await User.findByIdAndUpdate(_id, updatedUser, { new: true });
+    };
+  const updatedUser = await User.findByIdAndUpdate(_id, updatedFields, { new: true });
 
   res.status(200).json({ msg: 'Developer profile updated successfully', user: updatedUser });
     } catch (error) {
