@@ -9,7 +9,7 @@ router.get('/technology', offerController.getTechnology);
 
 router.get('/:id', offerController.getOfferById);
 
-router.get('/profile/:id', offerController.getOffersByOwner)
+router.get('/profile/:id', offerController.getOffersByOwner);
 
 router.post('/', isAuthenticated, offerController.createOffer);
 
