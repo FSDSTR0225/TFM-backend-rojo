@@ -42,7 +42,7 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -54,6 +54,7 @@
     "pnpm": "^10.8.1"
   },
   "devDependencies": {
+    "@rollup/rollup-win32-x64-msvc": "^4.41.0",
     "mongodb-memory-server": "^10.1.4",
     "nodemon": "^3.1.9",
     "supertest": "^7.1.1",
