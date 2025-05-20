@@ -7,7 +7,7 @@ module.exports = {
             //Filtrado por no borradas
             const offers = await Offer.find({ isDelete: false }).populate({
                 path: 'owner',
-                select: '_id name role.type role.recruiter.logo'
+                select: '_id name surname role.type role.recruiter.logo'
             });
             res.json(offers);
         } catch (error) {
