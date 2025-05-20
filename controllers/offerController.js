@@ -15,16 +15,16 @@ module.exports = {
         }
     },
 
-    getOffersByOwner : async (req,res) => {
+    getOffersByOwner: async (req, res) => {
         try {
             const owner = req.params.id
-            const offers = await Offer.find({owner: owner, isDelete: false}).populate({
+            const offers = await Offer.find({ owner: owner, isDelete: false }).populate({
                 path: 'owner',
                 select: '_id name surname role.type role.recruiter.logo'
             });
             res.json(offers);
         } catch (error) {
-            res.status(500).json({ msg: "Ningun registro de ofertas"});
+            res.status(500).json({ msg: "Ningun registro de ofertas" });
         }
     },
 
@@ -48,12 +48,9 @@ module.exports = {
         try {
             const userId = req.user.id
             const { position, role, location, contractType, company, salary, skills, description, language } = req.body
+            console.log('cuerpo del frontend: ',req.body);
             const salaryNumber = parseInt(salary);
-            const skillsArray = typeof skills === 'string'
-                ? skills.split(',').map(skill => skill.trim()).filter(Boolean)
-                : [];
 
-            console.log('Array: ', skillsArray);
             // 3. Validar longitud mínima
             if (description.length < 10) {
                 return res.status(400).json({ msg: 'La descripción debe tener al menos 10 caracteres' });
@@ -65,12 +62,12 @@ module.exports = {
             }
 
             // 5. Validar skills (debe ser array y con mínimo 1 skill)
-            if (!Array.isArray(skillsArray) || skillsArray.length === 0) {
+            if (!Array.isArray(skills) || skills.length === 0) {
                 return res.status(400).json({ msg: 'Debes incluir al menos una habilidad' });
             }
 
             const offer = await Offer.create({
-                position, role, location, contractType, company, salaryNumber, skills: skillsArray, description, language, owner: userId
+                position, role, location, contractType, company, salary: salaryNumber, skills, description, language, owner: userId
             })
             res.status(201).json({
                 msg: 'Offer created successfully',
@@ -129,6 +126,13 @@ module.exports = {
     },
 
     getTechnology: async (req, res) => {
-        return res.status(200).json(technologies);
+        const { q } = req.query;
+        if (q) {
+            const filtered = technologies.filter((tech)=>
+            tech.name.toLowerCase().includes(q.toLowerCase()));
+            return res.status(200).json(filtered);
+        }
+        return res.status(200).json([]);
+
     }
 }
