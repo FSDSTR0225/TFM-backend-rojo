@@ -15,6 +15,8 @@ router.get('/stats/:id',isAuthenticated, offerController.getRecruiterStats);
 
 router.post('/', isAuthenticated, offerController.createOffer);
 
+router.post('/:id/apply', isAuthenticated, offerController.applyToOffer)
+
 router.put('/:id', isAuthenticated, offerController.updateOffer);
 
 router.patch('/:id/delete', isAuthenticated, offerController.deleteOffer);
