@@ -196,13 +196,11 @@ module.exports = {
         offer.applicants.push({user: userId})
         await offer.save()
        const updatedOffer = await Offer.findById(offerId)
-            .populate('owner')
-            .populate('applicants.user', 'name email') // Opcional: popular datos del usuario
         
-        // SOLUCIÓN: Devolver la oferta actualizada
+        
         return res.status(200).json({
             msg: 'Application completed successfully',
-            offer: updatedOffer // ¡ESTO ES LO QUE FALTABA!
+            offer: updatedOffer 
         })  
       
     } catch (error) {
