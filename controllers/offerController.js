@@ -196,6 +196,8 @@ module.exports = {
         offer.applicants.push({user: userId})
         await offer.save()
        const updatedOffer = await Offer.findById(offerId)
+            .populate('owner')
+            .populate('applicants.user', 'name email') // Opcional: popular datos del usuario
         
         
         return res.status(200).json({
