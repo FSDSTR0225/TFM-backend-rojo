@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
     type: { type: String, required: true, enum: ['developer', 'recruiter'] },
     developer: {
       professionalPosition: { type: String },
+      experienceYears: { type: String },
       location: { type: String },
       instagram: { type: String },
       linkedin: { type: String },
