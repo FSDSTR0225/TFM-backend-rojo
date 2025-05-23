@@ -41,7 +41,6 @@ const userSchema = new mongoose.Schema({
       // ]
     },
     recruiter: {
-      logo: { type: String },
       companyName: { type: String },
       description: { type: String },
       location: { type: String },
