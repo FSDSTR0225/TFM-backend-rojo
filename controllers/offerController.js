@@ -5,10 +5,16 @@ module.exports = {
     getOffers: async (req, res) => {
         try {
             //Filtrado por no borradas
-            const offers = await Offer.find({ isDelete: false }).populate({
-                path: 'owner',
-                select: '_id name surname role.type role.recruiter.logo'
-            });
+            const offers = await Offer.find({ isDelete: false }).populate([
+      {
+        path: 'owner',
+        select: '_id name surname role.type role.recruiter.logo avatar'
+      },
+      {
+        path: 'applicants.user',
+        select: 'appliedDate'
+      }
+    ]);
             res.json(offers);
         } catch (error) {
             res.status(500).json({ msg: "Ningun registro de ofertas" });
@@ -18,10 +24,16 @@ module.exports = {
     getOffersByOwner: async (req, res) => {
         try {
             const owner = req.params.id
-            const offers = await Offer.find({ owner: owner, isDelete: false }).populate({
-                path: 'owner',
-                select: '_id name surname role.type role.recruiter.logo'
-            });
+            const offers = await Offer.find({ owner: owner, isDelete: false }).populate([
+      {
+        path: 'owner',
+        select: '_id name surname role.type role.recruiter.logo avatar'
+      },
+      {
+        path: 'applicants',
+        select: 'appliedDate'
+      }
+    ]);
             res.json(offers);
         } catch (error) {
             res.status(500).json({ msg: "Ningun registro de ofertas" });
@@ -134,5 +146,67 @@ module.exports = {
         }
         return res.status(200).json([]);
 
+    },
+    getRecruiterStats: async (req, res) => {
+        try {
+            const recruiterId = req.params.id
+            const offers = await Offer.find({ owner: recruiterId, isDelete: false }).select('applicants');
+            const totalOffers = offers.length;
+            const totalApplicants = offers.reduce((total, offer) => total + (offer.applicants?.length || 0), 0);
+            const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+            const applicationsLast7Days = offers.reduce((total, offer) => {
+                return (total + (offer.applicants?.filter(app => app.appliedDate > sevenDaysAgo).length || 0));
+            }, 0)
+           
+            const avgApplicationsPerOffer = totalOffers > 0 ? (totalApplicants / totalOffers).toFixed(2) : 0;
+    const avgDailyApplicationsLast7Days = (applicationsLast7Days / 7).toFixed(2);
+
+            res.json({
+                totalOffers,
+                totalApplicants,
+                applicationsLast7Days,
+                avgApplicationsPerOffer,
+                avgDailyApplicationsLast7Days
+            });
+   
+        } catch (error) {
+           console.error('Error obteniendo estadísticas:', error);
+    res.status(500).json({ msg: 'Error obteniendo estadísticas' });
+        }
+    },
+    applyToOffer: async (req, res) => {
+    try {
+        const offerId = req.params.id
+        const userId = req.user.id
+        const userRole = req.user.role
+
+        if(userRole !== 'developer') {
+            return res.status(403).json({msg: 'Only developers can apply for offers.' })
+        }
+
+        const offer = await Offer.findById(offerId);
+        if(!offer) return res.status(404).json({msg: 'Offer not found'})
+
+       const alreadyApplied = offer.applicants.some(app => app.user.toString() === userId)
+       if(alreadyApplied) {
+        return res.status(400).json({msg: 'You have already applied for this offer'})
+         }
+        offer.applicants.push({user: userId})
+        await offer.save()
+       const updatedOffer = await Offer.findById(offerId)
+            .populate('owner')
+            .populate('applicants.user', 'name email') // Opcional: popular datos del usuario
+        
+        
+        return res.status(200).json({
+            msg: 'Application completed successfully',
+            offer: updatedOffer 
+        })  
+      
+    } catch (error) {
+        return res.status(500).json({ msg: 'Error applying to the offer', error: error.message})
     }
+}
 }
