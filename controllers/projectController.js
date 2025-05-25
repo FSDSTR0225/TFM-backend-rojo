@@ -15,7 +15,8 @@ module.exports = {
 
     getProjectById : async (req,res) => {
         try {
-            const project = await Project.findById(req.params.id);
+            const project = await Project.findById(req.params.id)
+                .populate('owner', 'name surname avatar'); // Aquí está la clave
             res.json(project);
         } catch (error) {
             res.status(500).json({ msg: error.message});
