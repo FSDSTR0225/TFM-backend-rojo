@@ -8,6 +8,8 @@ const offerRouter = require("./routes/offerRouter");
 const projectRouter = require("./routes/projectRouter");
 const recruiterRouter = require("./routes/recruiterRouter");
 const devRouter = require("./routes/devRouter");
+const experienceRouter = require("./routes/experienceRouter");
+const studyRouter = require("./routes/studyRouter");
 
 //Configuraciones
 const app = express();
@@ -37,6 +39,8 @@ app.use("/offers", offerRouter);
 app.use("/projects", projectRouter);
 app.use("/recruiters", recruiterRouter);
 app.use("/devs", devRouter);
+app.use("/experiences", experienceRouter);
+app.use("/studies", studyRouter);
 
 app.listen(port, () => {
   console.log(`🚀 Servidor iniciado en http://localhost:${port}`);
