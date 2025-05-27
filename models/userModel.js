@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
     type: { type: String, required: true, enum: ['developer', 'recruiter'] },
     developer: {
       professionalPosition: { type: String },
+      experienceYears: { type: String },
       location: { type: String },
       instagram: { type: String },
       linkedin: { type: String },
@@ -27,20 +28,19 @@ const userSchema = new mongoose.Schema({
       experiences: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Experience' }],
       projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }],
       studies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Study' }],
-      registeredOffers: [
-        {
-          offer: { type: mongoose.Schema.Types.ObjectId, ref: 'Offer' },
-          appliedDate: { type: Date, default: Date.now },
-          status: {
-            type: String,
-            enum: ['pending', 'reviewed', 'interviewed', 'rejected', 'accepted'],
-            default: 'pending',
-          },
-        }
-      ]
+      // registeredOffers: [
+      //   {
+      //     offer: { type: mongoose.Schema.Types.ObjectId, ref: 'Offer' },
+      //     appliedDate: { type: Date, default: Date.now },
+      //     status: {
+      //       type: String,
+      //       enum: ['pending', 'reviewed', 'interviewed', 'rejected', 'accepted'],
+      //       default: 'pending',
+      //     },
+      //   }
+      // ]
     },
     recruiter: {
-      logo: { type: String },
       companyName: { type: String },
       description: { type: String },
       location: { type: String },

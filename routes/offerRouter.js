@@ -11,7 +11,11 @@ router.get('/:id', offerController.getOfferById);
 
 router.get('/profile/:id', offerController.getOffersByOwner);
 
+router.get('/stats/:id',isAuthenticated, offerController.getRecruiterStats);
+
 router.post('/', isAuthenticated, offerController.createOffer);
+
+router.post('/:id/apply', isAuthenticated, offerController.applyToOffer)
 
 router.put('/:id', isAuthenticated, offerController.updateOffer);
 

@@ -5,11 +5,11 @@ const projectSchema = new mongoose.Schema(
     title: { type: String, required: true },
     description: { type: String },
     category: { type: String },
-    projectSkills: [{ type: String }], // o technologiesUsed si prefieres ese nombre 
+    projectSkills: [{ type: String }], 
     professionalRole: { type: String },
     duration: { type: String },
     year: { type: Number },
-    gallery: [{ type: String }], // URLs de imágenes
+    gallery: [{ type: String }], 
     videoUrl: { type: String, default: null },
     codeSections: [{ type: String }],
     liveLink: { type: String },
