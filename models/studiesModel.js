@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const StudySchema = new mongoose.Schema(
       {
         instituteName: { type: String },
+        instituteLogo: { type: String },
         startDate: { type: Date },
         endDate: { type: Date },
         degree: { type: String },
