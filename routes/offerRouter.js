@@ -21,4 +21,8 @@ router.put('/:id', isAuthenticated, offerController.updateOffer);
 
 router.patch('/:id/delete', isAuthenticated, offerController.deleteOffer);
 
+router.get('/:id/candidates', isAuthenticated, offerController.getCandidatesByOffer);
+
+router.put('/:id/candidates/:candidateId', isAuthenticated, offerController.updateCandidateStatus);
+
 module.exports = router;
