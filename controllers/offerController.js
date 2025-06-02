@@ -6,15 +6,15 @@ module.exports = {
         try {
             //Filtrado por no borradas
             const offers = await Offer.find({ isDelete: false }).populate([
-      {
-        path: 'owner',
-        select: '_id name surname role.type role.recruiter.logo avatar'
-      },
-      {
-        path: 'applicants.user',
-        select: 'appliedDate'
-      }
-    ]);
+                {
+                    path: 'owner',
+                    select: '_id name surname role.type role.recruiter.logo avatar'
+                },
+                {
+                    path: 'applicants.user',
+                    select: 'appliedDate'
+                }
+            ]);
             res.json(offers);
         } catch (error) {
             res.status(500).json({ msg: "Ningun registro de ofertas" });
@@ -25,15 +25,15 @@ module.exports = {
         try {
             const owner = req.params.id
             const offers = await Offer.find({ owner: owner, isDelete: false }).populate([
-      {
-        path: 'owner',
-        select: '_id name surname role.type role.recruiter.logo avatar'
-      },
-      {
-        path: 'applicants',
-        select: 'appliedDate'
-      }
-    ]);
+                {
+                    path: 'owner',
+                    select: '_id name surname role.type role.recruiter.logo avatar'
+                },
+                {
+                    path: 'applicants',
+                    select: 'appliedDate'
+                }
+            ]);
             res.json(offers);
         } catch (error) {
             res.status(500).json({ msg: "Ningun registro de ofertas" });
@@ -60,7 +60,7 @@ module.exports = {
         try {
             const userId = req.user.id
             const { position, role, location, contractType, company, salary, skills, description, language } = req.body
-            console.log('cuerpo del frontend: ',req.body);
+            console.log('cuerpo del frontend: ', req.body);
             const salaryNumber = parseInt(salary);
 
             // 3. Validar longitud mínima
@@ -140,8 +140,8 @@ module.exports = {
     getTechnology: async (req, res) => {
         const { q } = req.query;
         if (q) {
-            const filtered = technologies.filter((tech)=>
-            tech.name.toLowerCase().includes(q.toLowerCase()));
+            const filtered = technologies.filter((tech) =>
+                tech.name.toLowerCase().includes(q.toLowerCase()));
             return res.status(200).json(filtered);
         }
         return res.status(200).json([]);
@@ -154,14 +154,14 @@ module.exports = {
             const totalOffers = offers.length;
             const totalApplicants = offers.reduce((total, offer) => total + (offer.applicants?.length || 0), 0);
             const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
             const applicationsLast7Days = offers.reduce((total, offer) => {
                 return (total + (offer.applicants?.filter(app => app.appliedDate > sevenDaysAgo).length || 0));
             }, 0)
-           
+
             const avgApplicationsPerOffer = totalOffers > 0 ? (totalApplicants / totalOffers).toFixed(2) : 0;
-    const avgDailyApplicationsLast7Days = (applicationsLast7Days / 7).toFixed(2);
+            const avgDailyApplicationsLast7Days = (applicationsLast7Days / 7).toFixed(2);
 
             res.json({
                 totalOffers,
@@ -170,43 +170,110 @@ module.exports = {
                 avgApplicationsPerOffer,
                 avgDailyApplicationsLast7Days
             });
-   
+
         } catch (error) {
-           console.error('Error obteniendo estadísticas:', error);
-    res.status(500).json({ msg: 'Error obteniendo estadísticas' });
+            console.error('Error obteniendo estadísticas:', error);
+            res.status(500).json({ msg: 'Error obteniendo estadísticas' });
         }
     },
     applyToOffer: async (req, res) => {
-    try {
-        const offerId = req.params.id
-        const userId = req.user.id
-        const userRole = req.user.role
+        try {
+            const offerId = req.params.id
+            const userId = req.user.id
+            const userRole = req.user.role
 
-        if(userRole !== 'developer') {
-            return res.status(403).json({msg: 'Only developers can apply for offers.' })
+            if (userRole !== 'developer') {
+                return res.status(403).json({ msg: 'Only developers can apply for offers.' })
+            }
+
+            const offer = await Offer.findById(offerId);
+            if (!offer) return res.status(404).json({ msg: 'Offer not found' })
+
+            const alreadyApplied = offer.applicants.some(app => app.user.toString() === userId)
+            if (alreadyApplied) {
+                return res.status(400).json({ msg: 'You have already applied for this offer' })
+            }
+            offer.applicants.push({ user: userId })
+            await offer.save()
+            const updatedOffer = await Offer.findById(offerId)
+                .populate('owner')
+                .populate('applicants.user', 'name email') // Opcional: popular datos del usuario
+
+
+            return res.status(200).json({
+                msg: 'Application completed successfully',
+                offer: updatedOffer
+            })
+
+        } catch (error) {
+            return res.status(500).json({ msg: 'Error applying to the offer', error: error.message })
         }
+    },
+    getCandidatesByOffer: async (req, res) => {
+        try {
+            const offerId = req.params.id;
+            const offer = await Offer.findById(offerId)
+                .populate('applicants.user', 'name email appliedDate') // Popular los datos del usuario
+                .populate('owner', 'name surname role.type role.recruiter.logo avatar'); // Popular los datos del propietario de la oferta
 
-        const offer = await Offer.findById(offerId);
-        if(!offer) return res.status(404).json({msg: 'Offer not found'})
+            if (!offer) {
+                return res.status(404).json({ msg: 'Offer not found' });
+            }
+            console.log('Offer found:', offer.applicants);
+            return res.status(200).json(offer.applicants);
+        } catch (error) {
+            console.error('Error fetching candidates:', error);
+            return res.status(500).json({ msg: 'Error fetching candidates', error: error.message });
+        }
+    },
 
-       const alreadyApplied = offer.applicants.some(app => app.user.toString() === userId)
-       if(alreadyApplied) {
-        return res.status(400).json({msg: 'You have already applied for this offer'})
-         }
-        offer.applicants.push({user: userId})
-        await offer.save()
-       const updatedOffer = await Offer.findById(offerId)
-            .populate('owner')
-            .populate('applicants.user', 'name email') // Opcional: popular datos del usuario
-        
-        
-        return res.status(200).json({
-            msg: 'Application completed successfully',
-            offer: updatedOffer 
-        })  
-      
-    } catch (error) {
-        return res.status(500).json({ msg: 'Error applying to the offer', error: error.message})
+    updateCandidateStatus: async (req, res) => {
+        try {
+            const { id: offerId, candidateId } = req.params;
+            const { status } = req.body;
+            const userId = req.user.id;
+            const roleUser = req.user.role;
+            console.log('Updating candidate status:', { offerId, candidateId, status });
+            // 1) Validar rol
+            if (roleUser !== 'recruiter') {
+                return res.status(403).json({ msg: 'No tienes permiso para editar candidatos' });
+            }
+            // 2) Validar valor de status
+            const validStatuses = ['pending', 'reviewed', 'interviewed', 'rejected', 'accepted'];
+            if (!validStatuses.includes(status)) {
+                return res.status(400).json({ msg: 'Valor de status no válido' });
+            }
+            // 3) Buscar la oferta
+            const offer = await Offer.findById(offerId);
+            if (!offer) {
+                return res.status(404).json({ msg: 'Oferta no encontrada' });
+            }
+            // 4) Comprobar ownership
+            if (!offer.owner.equals(userId)) {
+                return res.status(403).json({ msg: 'No tienes permiso para actualizar este candidato' });
+            }
+            // 5) Localizar índice del candidato
+            const candidateIndex = offer.applicants.findIndex(app =>
+                app._id.equals(candidateId)
+            );
+            if (candidateIndex === -1) {
+                return res.status(404).json({ msg: 'Candidate not found in this offer' });
+            }
+            // 6) Actualizar estado y guardar
+            offer.applicants[candidateIndex].status = status;
+            await offer.save();
+
+            // 7) Re-popular datos del candidato actualizado
+            await offer.populate('applicants.user', 'name email');
+
+            return res.status(200).json({
+                msg: 'Estado del candidato actualizado correctamente',
+                offer: offer
+            });
+
+        } catch (error) {
+            console.error('Error updating candidate status:', error);
+            return res.status(500).json({ msg: error.message });
+        }
     }
-}
 }
