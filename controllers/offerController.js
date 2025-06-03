@@ -213,14 +213,17 @@ module.exports = {
         try {
             const offerId = req.params.id;
             const offer = await Offer.findById(offerId)
-                .populate('applicants.user', 'name email appliedDate') // Popular los datos del usuario
+                .populate('applicants.user', 'name email surname avatar appliedDate') // Popular los datos del usuario
                 .populate('owner', 'name surname role.type role.recruiter.logo avatar'); // Popular los datos del propietario de la oferta
 
             if (!offer) {
                 return res.status(404).json({ msg: 'Offer not found' });
             }
             console.log('Offer found:', offer.applicants);
-            return res.status(200).json(offer.applicants);
+            return res.status(200).json({
+                nameOffer: offer.position,
+                applicants:offer.applicants
+            });
         } catch (error) {
             console.error('Error fetching candidates:', error);
             return res.status(500).json({ msg: 'Error fetching candidates', error: error.message });
@@ -264,7 +267,7 @@ module.exports = {
             await offer.save();
 
             // 7) Re-popular datos del candidato actualizado
-            await offer.populate('applicants.user', 'name email');
+            await offer.populate('applicants.user', 'name surname email avatar');
 
             return res.status(200).json({
                 msg: 'Estado del candidato actualizado correctamente',
