@@ -6,6 +6,7 @@ const experienceSchema = new mongoose.Schema(
       position: { type: String },
       startDate: { type: Date },
       endDate: { type: Date },
+      companyLogo: { type: String },
       owner: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",

@@ -15,7 +15,6 @@ getExperienceById: async (req, res) => {
   }
 },
 
-// ✅ Obtener experiencias por usuario (owner)
 getExperiencesByOwner: async (req, res) => {
   try {
     const ownerId = req.params.ownerId;

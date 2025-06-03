@@ -23,6 +23,18 @@ module.exports = {
         }
     },
 
+    getProjectsByDeveloper: async (req, res) => {
+        try {
+            const developerId = req.params.developerId;
+            const projects = await Project.find({ owner: developerId, isDeleted: { $ne: true } })
+            .populate('owner', 'name surname avatar');
+
+            res.status(200).json(projects);
+        } catch (error) {
+            res.status(500).json({ msg: error.message });
+        }
+    },
+
     createProject: async (req, res) => {
         try {
             const userId = req.user.id;
