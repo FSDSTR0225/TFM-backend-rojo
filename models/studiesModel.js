@@ -14,7 +14,9 @@ const StudySchema = new mongoose.Schema(
               type: mongoose.Schema.Types.ObjectId,
               ref: "User",
               required: false,
-          }
+          },
+        isDeleted: { type: Boolean, default: false },
+        deletedAt: { type: Date, default: null },
       }
   );
   

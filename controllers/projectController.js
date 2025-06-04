@@ -103,7 +103,27 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({ msg: error.message });
         }
+    },
+
+    softDeleteProject: async (req, res) => {
+      try {
+        const projectId = req.params.id;
+        const userId = req.user.id;
+    
+        const project = await Project.findById(projectId);
+        if (!project) return res.status(404).json({ msg: 'Project not found' });
+        if (project.owner.toString() !== userId) return res.status(403).json({ msg: 'Unauthorized' });
+    
+        project.isDeleted = true;
+        await project.save();
+    
+        res.status(200).json({ msg: 'Project deleted (soft)' });
+      } catch (error) {
+        res.status(500).json({ msg: error.message });
+      }
     }
+
+
 }   
 
 

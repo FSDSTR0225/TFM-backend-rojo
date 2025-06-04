@@ -10,4 +10,7 @@ router.post('/', isAuthenticated, projectController.createProject);
 router.put('/:id', isAuthenticated, projectController.updateProject);
 router.delete("/:id", isAuthenticated, projectController.deleteProject);
 
+router.put('/:id/soft-delete', isAuthenticated, projectController.softDeleteProject);
+
+
 module.exports = router;
