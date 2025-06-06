@@ -25,4 +25,6 @@ router.get('/:id/candidates', isAuthenticated, offerController.getCandidatesByOf
 
 router.put('/:id/candidates/:candidateId', isAuthenticated, offerController.updateCandidateStatus);
 
+router.get('/applied/:devId', isAuthenticated, offerController.getOffersAppliedByDev);
+
 module.exports = router;

@@ -275,5 +275,19 @@ module.exports = {
             console.error('Error updating candidate status:', error);
             return res.status(500).json({ msg: error.message });
         }
+    },
+    getOffersAppliedByDev: async (req, res) => {
+        try {
+            const offers = await Offer.find({
+                'applicants.user': req.params.devId,
+                isDelete: { $ne: true }
+            }).populate([
+                { path: 'owner', select: '_id name surname role.type role.recruiter.logo avatar' },
+                { path: 'applicants.user', select: 'name email' }
+            ]);
+            res.status(200).json({ offers });
+        } catch (error) {
+            res.status(500).json({ msg: error.message });
+        }
     }
 }
