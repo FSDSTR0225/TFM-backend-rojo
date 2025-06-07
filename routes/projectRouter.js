@@ -12,4 +12,7 @@ router.delete("/:id", isAuthenticated, projectController.deleteProject);
 router.post('/:id/view', projectController.incrementView);
 router.post('/:id/like', isAuthenticated, projectController.toggleLike);
 
+router.put('/:id/soft-delete', isAuthenticated, projectController.softDeleteProject);
+
+
 module.exports = router;

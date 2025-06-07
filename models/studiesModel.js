@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const StudySchema = new mongoose.Schema(
       {
         instituteName: { type: String },
+        instituteLogo: { type: String },
         startDate: { type: Date },
         endDate: { type: Date },
         degree: { type: String },
@@ -13,7 +14,9 @@ const StudySchema = new mongoose.Schema(
               type: mongoose.Schema.Types.ObjectId,
               ref: "User",
               required: false,
-          }
+          },
+        isDeleted: { type: Boolean, default: false },
+        deletedAt: { type: Date, default: null },
       }
   );
   
