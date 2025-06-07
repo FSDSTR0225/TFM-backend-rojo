@@ -280,7 +280,7 @@ module.exports = {
         try {
             const offers = await Offer.find({
                 'applicants.user': req.params.devId,
-                isDelete: { $ne: true }
+                isDelete: false
             }).populate([
                 { path: 'owner', select: '_id name surname role.type role.recruiter.logo avatar' },
                 { path: 'applicants.user', select: 'name email' }
@@ -301,7 +301,7 @@ module.exports = {
         $not: { 
             $elemMatch: { user: devId } 
         } 
-    }, isDelete: { $ne: true } }).populate([
+    }, isDelete: false  }).populate([
                 { path: 'owner', select: '_id name surname role.type role.recruiter.logo avatar' },
                 { path: 'applicants.user', select: 'name email' }
             ]);
