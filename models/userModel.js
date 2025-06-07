@@ -15,7 +15,6 @@ const userSchema = new mongoose.Schema({
       professionalPosition: { type: String },
       experienceYears: { type: String },
       location: { type: String },
-      instagram: { type: String },
       linkedin: { type: String },
       github: { type: String },
       skills: [{ type: String }],
@@ -42,7 +41,6 @@ const userSchema = new mongoose.Schema({
     },
     recruiter: {
       companyName: { type: String },
-      description: { type: String },
       location: { type: String },
       sector: { type: String },
       website: { type: String },

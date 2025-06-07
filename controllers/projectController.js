@@ -105,6 +105,49 @@ module.exports = {
         }
     },
 
+    incrementView: async (req, res) => {
+        try {
+        const projectId = req.params.id;
+        const updatedProject = await Project.findByIdAndUpdate(
+            projectId,
+            { $inc: { views: 1 } },   // Incrementa views en 1
+            { new: true }
+        );
+        if (!updatedProject) return res.status(404).json({ msg: 'Project not found' });
+        res.json({ views: updatedProject.views });
+        } catch (error) {
+        res.status(500).json({ msg: error.message });
+        }
+    },
+
+    toggleLike: async (req, res) => {
+    try {
+        const projectId = req.params.id;
+        const userId = req.user.id;
+
+        const project = await Project.findById(projectId);
+
+        if (!project) return res.status(404).json({ msg: 'Project not found' });
+
+        const likedIndex = project.likedBy.findIndex(id => id.toString() === userId);
+
+        if (likedIndex === -1) {
+        // No ha dado like, agregamos userId
+        project.likedBy.push(userId);
+        } else {
+        // Ya dio like, lo quitamos (toggle off)
+        project.likedBy.splice(likedIndex, 1);
+        }
+
+        project.likes = project.likedBy.length;  // Actualizamos contador
+
+        await project.save();
+
+        res.json({ likes: project.likes, liked: likedIndex === -1 });
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
+    }
+    },
     softDeleteProject: async (req, res) => {
       try {
         const projectId = req.params.id;

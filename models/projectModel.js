@@ -19,6 +19,9 @@ const projectSchema = new mongoose.Schema(
       ref: "User",
       required: false,
     },
+    likedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],  // Usuarios que dieron like
+    likes: { type: Number, default: 0 },  // Cantidad de likes actual
+    views: { type: Number, default: 0 },  
     isDeleted: { type: Boolean, default: false },
     deletedAt: { type: Date, default: null },
   },
