@@ -289,5 +289,25 @@ module.exports = {
         } catch (error) {
             res.status(500).json({ msg: error.message });
         }
+    },
+    getOffersByDev: async (req, res) => {
+        try {
+            const devId = req.user.id
+            const roleUser = req.user.role
+            if (roleUser !== 'developer') {
+                return res.status(403).json({ msg: 'You do not have permission to access this resource' });
+            }            
+            const offers = await Offer.find({ applicants: { 
+        $not: { 
+            $elemMatch: { user: devId } 
+        } 
+    }, isDelete: { $ne: true } }).populate([
+                { path: 'owner', select: '_id name surname role.type role.recruiter.logo avatar' },
+                { path: 'applicants.user', select: 'name email' }
+            ]);
+            res.status(200).json({ offers });
+        } catch (error) {
+            res.status(500).json({ msg: error.message });
+        }
     }
 }
