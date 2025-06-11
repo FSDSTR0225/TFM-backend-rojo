@@ -11,6 +11,7 @@ router.put('/:id', isAuthenticated, projectController.updateProject);
 router.delete("/:id", isAuthenticated, projectController.deleteProject);
 router.post('/:id/view', projectController.incrementView);
 router.post('/:id/like', isAuthenticated, projectController.toggleLike);
+router.get("/:id/like-status", isAuthenticated, projectController.getLikeStatus);
 
 router.put('/:id/soft-delete', isAuthenticated, projectController.softDeleteProject);
 

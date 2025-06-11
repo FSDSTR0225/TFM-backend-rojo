@@ -13,15 +13,26 @@ module.exports = {
         }
     },
 
-    getProjectById : async (req,res) => {
-        try {
-            const project = await Project.findById(req.params.id)
-                .populate('owner', 'name surname avatar'); // Aquí está la clave
-            res.json(project);
-        } catch (error) {
-            res.status(500).json({ msg: error.message});
+    getProjectById: async (req, res) => {
+    try {
+        const userId = req.user ? req.user.id : null;  // el id del usuario logueado, o null si no hay
+        const project = await Project.findById(req.params.id)
+            .populate('owner', 'name surname avatar');
+
+        if (!project) return res.status(404).json({ msg: 'Project not found' });
+
+        // Comprobar si el usuario ha dado like
+        let liked = false;
+        if (userId) {
+            liked = project.likedBy.some(id => id.toString() === userId);
         }
-    },
+
+        // Devuelves el proyecto junto con liked
+        res.json({ ...project.toObject(), liked });
+        } catch (error) {
+            res.status(500).json({ msg: error.message });
+        }
+   },
 
     getProjectsByDeveloper: async (req, res) => {
         try {
@@ -164,7 +175,24 @@ module.exports = {
       } catch (error) {
         res.status(500).json({ msg: error.message });
       }
-    }
+    },
+
+    getLikeStatus: async (req, res) => {
+    try {
+        const projectId = req.params.id;
+        const userId = req.user.id;
+
+        const project = await Project.findById(projectId);
+
+        if (!project) return res.status(404).json({ msg: "Project not found" });
+
+        const liked = project.likedBy.some(id => id.toString() === userId);
+
+        res.json({ liked, likesCount: project.likes });
+        } catch (error) {
+            res.status(500).json({ msg: error.message });
+        }
+    },
 
 
 }   
