@@ -117,18 +117,19 @@ module.exports = {
     },
 
     incrementView: async (req, res) => {
-        try {
+    try {
         const projectId = req.params.id;
         const updatedProject = await Project.findByIdAndUpdate(
-            projectId,
-            { $inc: { views: 1 } },   // Incrementa views en 1
-            { new: true }
+        projectId,
+        { $inc: { views: 1 } },
+        { new: true }
         );
         if (!updatedProject) return res.status(404).json({ msg: 'Project not found' });
         res.json({ views: updatedProject.views });
-        } catch (error) {
+    } catch (error) {
+        console.error('Error en incrementView:', error);  // <-- aquí
         res.status(500).json({ msg: error.message });
-        }
+    }
     },
 
     toggleLike: async (req, res) => {
