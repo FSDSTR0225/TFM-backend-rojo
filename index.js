@@ -10,6 +10,7 @@ const recruiterRouter = require("./routes/recruiterRouter");
 const devRouter = require("./routes/devRouter");
 const experienceRouter = require("./routes/experienceRouter");
 const studyRouter = require("./routes/studyRouter");
+const uploadRouter = require('./routes/uploadRouter');
 
 //Configuraciones
 const app = express();
@@ -41,6 +42,9 @@ app.use("/recruiters", recruiterRouter);
 app.use("/devs", devRouter);
 app.use("/experiences", experienceRouter);
 app.use("/studies", studyRouter);
+
+//upload images
+app.use('/', uploadRouter);
 
 app.listen(port, () => {
   console.log(`🚀 Servidor iniciado en http://localhost:${port}`);
