@@ -13,15 +13,26 @@ module.exports = {
         }
     },
 
-    getProjectById : async (req,res) => {
-        try {
-            const project = await Project.findById(req.params.id)
-                .populate('owner', 'name surname avatar'); // Aquí está la clave
-            res.json(project);
-        } catch (error) {
-            res.status(500).json({ msg: error.message});
+    getProjectById: async (req, res) => {
+    try {
+        const userId = req.user ? req.user.id : null;  // el id del usuario logueado, o null si no hay
+        const project = await Project.findById(req.params.id)
+            .populate('owner', 'name surname avatar');
+
+        if (!project) return res.status(404).json({ msg: 'Project not found' });
+
+        // Comprobar si el usuario ha dado like
+        let liked = false;
+        if (userId) {
+            liked = project.likedBy.some(id => id.toString() === userId);
         }
-    },
+
+        // Devuelves el proyecto junto con liked
+        res.json({ ...project.toObject(), liked });
+        } catch (error) {
+            res.status(500).json({ msg: error.message });
+        }
+   },
 
     getProjectsByDeveloper: async (req, res) => {
         try {
@@ -103,7 +114,88 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({ msg: error.message });
         }
+    },
+
+    incrementView: async (req, res) => {
+    try {
+        const projectId = req.params.id;
+        const updatedProject = await Project.findByIdAndUpdate(
+        projectId,
+        { $inc: { views: 1 } },
+        { new: true }
+        );
+        if (!updatedProject) return res.status(404).json({ msg: 'Project not found' });
+        res.json({ views: updatedProject.views });
+    } catch (error) {
+        console.error('Error en incrementView:', error);  // <-- aquí
+        res.status(500).json({ msg: error.message });
     }
+    },
+
+    toggleLike: async (req, res) => {
+    try {
+        const projectId = req.params.id;
+        const userId = req.user.id;
+
+        const project = await Project.findById(projectId);
+
+        if (!project) return res.status(404).json({ msg: 'Project not found' });
+
+        const likedIndex = project.likedBy.findIndex(id => id.toString() === userId);
+
+        if (likedIndex === -1) {
+        // No ha dado like, agregamos userId
+        project.likedBy.push(userId);
+        } else {
+        // Ya dio like, lo quitamos (toggle off)
+        project.likedBy.splice(likedIndex, 1);
+        }
+
+        project.likes = project.likedBy.length;  // Actualizamos contador
+
+        await project.save();
+
+        res.json({ likes: project.likes, liked: likedIndex === -1 });
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
+    }
+    },
+    softDeleteProject: async (req, res) => {
+      try {
+        const projectId = req.params.id;
+        const userId = req.user.id;
+    
+        const project = await Project.findById(projectId);
+        if (!project) return res.status(404).json({ msg: 'Project not found' });
+        if (project.owner.toString() !== userId) return res.status(403).json({ msg: 'Unauthorized' });
+    
+        project.isDeleted = true;
+        await project.save();
+    
+        res.status(200).json({ msg: 'Project deleted (soft)' });
+      } catch (error) {
+        res.status(500).json({ msg: error.message });
+      }
+    },
+
+    getLikeStatus: async (req, res) => {
+    try {
+        const projectId = req.params.id;
+        const userId = req.user.id;
+
+        const project = await Project.findById(projectId);
+
+        if (!project) return res.status(404).json({ msg: "Project not found" });
+
+        const liked = project.likedBy.some(id => id.toString() === userId);
+
+        res.json({ liked, likesCount: project.likes });
+        } catch (error) {
+            res.status(500).json({ msg: error.message });
+        }
+    },
+
+
 }   
 
 

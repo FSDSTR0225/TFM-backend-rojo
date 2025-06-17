@@ -7,6 +7,8 @@ router.get('/', offerController.getOffers);
 
 router.get('/technology', offerController.getTechnology);
 
+router.get('/bydev', isAuthenticated, offerController.getOffersByDev);
+
 router.get('/:id', offerController.getOfferById);
 
 router.get('/profile/:id', offerController.getOffersByOwner);
@@ -24,5 +26,9 @@ router.patch('/:id/delete', isAuthenticated, offerController.deleteOffer);
 router.get('/:id/candidates', isAuthenticated, offerController.getCandidatesByOffer);
 
 router.put('/:id/candidates/:candidateId', isAuthenticated, offerController.updateCandidateStatus);
+
+router.get('/applied/:devId', isAuthenticated, offerController.getOffersAppliedByDev);
+
+
 
 module.exports = router;

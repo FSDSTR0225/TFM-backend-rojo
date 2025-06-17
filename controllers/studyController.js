@@ -19,7 +19,7 @@ getStudiesById: async (req, res) => {
 getStudiesByOwner: async (req, res) => {
   try {
     const ownerId = req.params.ownerId;
-    const studies = await Study.find({ owner: ownerId });
+    const studies = await Study.find({ owner: ownerId, isDeleted: { $ne: true } });
     res.status(200).json({ studies });
   } catch (error) {
     res.status(500).json({ msg: error.message });
@@ -29,10 +29,10 @@ getStudiesByOwner: async (req, res) => {
 createStudy: async(req, res) => {
     try {
         const userId = req.user.id
-        const {instituteName, startDate, endDate, degree, description, location, multimedia} = req.body
+        const {instituteName, instituteLogo, startDate, endDate, degree, description, location, multimedia} = req.body
 
         const study = await Study.create({
-          instituteName, startDate, endDate, degree, description, location, multimedia, owner: userId
+          instituteName, instituteLogo, startDate, endDate, degree, description, location, multimedia, owner: userId
         })
 
         res.status(201).json({
@@ -54,11 +54,30 @@ updateStudy: async(req, res) => {
         return res.status(404).json({ msg: 'Study not found' });
     }
     if(study.owner.toString() !== userId ) return res.status(403).json({ msg: 'Some required fields are missing' })
-    const updatedStudy = await User.findByIdAndUpdate(studyId, {...studyNewData}, {new:true})
+    const updatedStudy = await Study.findByIdAndUpdate(studyId, {...studyNewData}, {new:true})
     return res.status(200).json({msg:'Study updated', updatedStudy})
     } 
     catch (error) {
-        return  res.status(500).json({ msg: error.message});
+        return  res.status(500).json({ msg: error.message})
+        }
+    },
+    
+    softDeleteStudy: async (req, res) => {
+      try {
+        const studyId = req.params.id;
+        const userId = req.user.id;
+    
+        const study = await Study.findById(studyId);
+        if (!study) return res.status(404).json({ msg: 'Study not found' });
+        if (study.owner.toString() !== userId) return res.status(403).json({ msg: 'Unauthorized' });
+    
+        study.isDeleted = true;
+        await study.save();
+    
+        res.status(200).json({ msg: 'Study deleted (soft)' });
+      } catch (error) {
+        res.status(500).json({ msg: error.message });
+    
     }
 }
 };

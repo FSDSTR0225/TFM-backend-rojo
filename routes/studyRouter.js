@@ -11,4 +11,7 @@ router.post('/', isAuthenticated, studyController.createStudy);
 
 router.put('/:id', isAuthenticated, studyController.updateStudy);
 
+router.put('/:id/soft-delete', isAuthenticated, studyController.softDeleteStudy);
+
+
 module.exports = router;
