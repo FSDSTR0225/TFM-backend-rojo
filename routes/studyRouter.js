@@ -3,7 +3,9 @@ const router = express.Router();
 const studyController = require('../controllers/studyController');
 const isAuthenticated = require('../middlewares/auth/isAutenticated');
 
-router.get('/', studyController.getStudies);
+
+router.get('/owner/:ownerId', studyController.getStudiesByOwner);
+router.get('/:id', studyController.getStudiesById);
 
 router.post('/', isAuthenticated, studyController.createStudy);
 

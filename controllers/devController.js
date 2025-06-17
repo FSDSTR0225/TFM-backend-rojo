@@ -13,37 +13,45 @@ module.exports = {
 },
 
 //Este código nos muestra el perfil de cada dev
-getDevById : async (req,res) => {
+ getDevById: async (req, res) => {
     try {
-        const dev = await User.findById(req.params.id);
-        return res.json(dev);
+      const dev = await User.findById(req.params.id);
+      return res.json(dev);
     } catch (error) {
-        return res.status(500).json({ msg: error.message});
+      return res.status(500).json({ msg: error.message });
     }
-},
+  },
 
 updateDevProfile: async (req, res) => {
   try {
     const {
       _id,
-      professionalPosition,
-      location,
-      instagram,
-      linkedin,
-      github,
-      skills,
-      languages,
       description,
       name,
       surname,
+      role: {
+        developer: {
+          professionalPosition,
+          location,
+          instagram,
+          linkedin,
+          github,
+          skills,
+          languages
+        } = {}
+      } = {}
     } = req.body;
-    
-    // if (
-    //   !_id || !professionalPosition || !location || !skills || !languages 
-    // ) {
-    //   return res.status(400).json({ msg: 'Some required fields are missing' });
-    // }
 
+    if (
+      !_id || 
+      // !professionalPosition || 
+      // !location ||
+      // !Array.isArray(skills) || skills.length === 0 ||
+      !Array.isArray(languages) || languages.length === 0 
+    ) {
+      return res.status(400).json({ msg: 'Some required fields are missing' });
+    }
+  
     const user = await User.findById(_id);
     if (!user) {
       return res.status(404).json({ msg: 'User not found' });
@@ -57,7 +65,7 @@ updateDevProfile: async (req, res) => {
       return res.status(400).json({ msg: 'User must have the role of "developer"' });
     }
 
-const updatedFields = {
+    const updatedFields = {
       name,
       surname,
       description,
