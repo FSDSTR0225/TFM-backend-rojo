@@ -1,6 +1,10 @@
+
+
 const mongoose = require("mongoose");
 const Offer = require('../models/offerModel');
 const technologies = require('../tecnologias/programacion');
+const fs = require('fs');
+const pdfkit = require('pdfkit');
 module.exports = {
     getOffers: async (req, res) => {
         try {
@@ -181,6 +185,7 @@ module.exports = {
             const offerId = req.params.id
             const userId = req.user.id
             const userRole = req.user.role
+            const { phone, coverLetter, gdprAccepted } = req.body
 
             if (userRole !== 'developer') {
                 return res.status(403).json({ msg: 'Only developers can apply for offers.' })
@@ -193,7 +198,11 @@ module.exports = {
             if (alreadyApplied) {
                 return res.status(400).json({ msg: 'You have already applied for this offer' })
             }
-            offer.applicants.push({ user: userId })
+            offer.applicants.push({
+                 user: userId,
+                 phone,
+                 coverLetter,
+                 gdprAccepted,})
             await offer.save()
             const updatedOffer = await Offer.findById(offerId)
                 .populate('owner')
@@ -309,5 +318,71 @@ module.exports = {
         } catch (error) {
             res.status(500).json({ msg: error.message });
         }
+    },
+
+    generateCoverLetter: async (res, req) => {
+        try {
+            const {offerId, applicantId} = req.params
+             const offer = await Offer.findById(offerId)
+             .populate('owner', 'name surname role.recruiter.companyName' )
+             .populate('applicants.user', 'name surname email' )
+
+             if(!offer) return res.status(404).json({msg: 'Offer not found'})
+                const applicant = offer.applicants.id(applicantId)
+                if(!applicant) return res.status(404).json({msg: 'Applicant not found'})
+
+                //crate PDF
+           const doc = new PDFDocument();
+           const filename = `cover-letter-${applicant.user.name}-${offerId}.pdf`;
+           res.setHeader('Content-Type', 'application/pdf');
+           res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+           doc.pipe(res);
+           // header
+           doc.fontSize(18).text('Cover Letter', { align: 'center' }).moveDown();
+           doc.fontSize(14).text(`To: ${offer.owner.role.recruiter.companyName}`, { align: 'center' }).moveDown();
+           doc.fontSize(12).text(`Subject: ${offer.position}`, { align: 'center' }).moveDown();
+           // body
+    doc.fontSize(12).text(applicant.coverLetter || 'El candidato no proporcionó carta de presentación');
+    doc.moveDown(2);
+    
+    //footer
+    doc.fontSize(10).text(`Fecha de aplicación: ${applicant.appliedDate.toLocaleDateString()}`, { align: 'right' });
+    doc.text(`Teléfono de contacto: ${applicant.phone}`, { align: 'right' });
+    
+    doc.end();
+        } catch (error) {
+            res.status(500).json({ msg: error.message });
+  }
+        },
+
+getApplicantPhone: async (req, res) => {
+  try {
+    const { offerId, applicantId } = req.params;
+    const recruiterId = req.user.id;
+    
+    const offer = await Offer.findOne({
+      _id: offerId,
+      owner: recruiterId
+    });
+    
+    if (!offer) return res.status(404).json({ msg: 'Offer not found' });
+    
+    const applicant = offer.applicants.id(applicantId);
+    if (!applicant) return res.status(404).json({ msg: 'Applicant not found' });
+    
+    if (!applicant.gdprAccepted) {
+      return res.status(403).json({ 
+        msg: 'El candidato no ha dado consentimiento para contacto telefónico' 
+      });
     }
+    
+    res.json({
+      phone: applicant.phone,
+      name: applicant.user.name // Debería ser poblado en la consulta
+    });
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+}
+        
 }
