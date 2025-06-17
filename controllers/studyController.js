@@ -29,10 +29,10 @@ getStudiesByOwner: async (req, res) => {
 createStudy: async(req, res) => {
     try {
         const userId = req.user.id
-        const {instituteName, startDate, endDate, degree, description, location, multimedia} = req.body
+        const {instituteName, instituteLogo, startDate, endDate, degree, description, location, multimedia} = req.body
 
         const study = await Study.create({
-          instituteName, startDate, endDate, degree, description, location, multimedia, owner: userId
+          instituteName, instituteLogo, startDate, endDate, degree, description, location, multimedia, owner: userId
         })
 
         res.status(201).json({
