@@ -26,6 +26,7 @@ updateDevProfile: async (req, res) => {
   try {
     const {
       _id,
+      avatar,
       description,
       name,
       surname,
@@ -33,7 +34,6 @@ updateDevProfile: async (req, res) => {
         developer: {
           professionalPosition,
           location,
-          instagram,
           linkedin,
           github,
           skills,
@@ -67,6 +67,7 @@ updateDevProfile: async (req, res) => {
 
     const updatedFields = {
       name,
+      avatar,
       surname,
       description,
       role: {
@@ -75,7 +76,6 @@ updateDevProfile: async (req, res) => {
           ...user.role.developer,
           professionalPosition,
           location,
-          instagram,
           linkedin,
           github,
           skills,
