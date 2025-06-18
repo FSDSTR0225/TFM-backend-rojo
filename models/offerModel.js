@@ -32,11 +32,14 @@ const offerSchema = new mongoose.Schema({
           type: String, 
           enum: ['pending', 'reviewed', 'interviewed', 'rejected', 'accepted'], 
           default: 'pending' 
-      }
-  }]
+      },
+      coverLetter: { type: String },  // Cambiado de coverLatter a coverLetter
+  phone: { type: String },  // Nuevo campo para teléfono
+  gdprAccepted: { type: Boolean, default: false } // Nuevo campo GDPR
 }, {
   timestamps: true
-});
+}]
+}) ;
 
 const Offer = mongoose.model('Offer', offerSchema);
 module.exports = Offer;
