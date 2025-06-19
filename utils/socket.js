@@ -27,6 +27,8 @@ io.on("connection",(socket)=>{
 
     socket.on("disconnect", () => {
         console.log("Usuario desconectado ",socket.id);
+        delete userSocketMap[userId];
+        io.emit("getOnlineUsers", Object.keys(userSocketMap));
     });
 })
 module.exports = {io, server, app, getReceiverSocketId};
