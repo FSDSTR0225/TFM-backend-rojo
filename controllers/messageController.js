@@ -35,6 +35,15 @@ module.exports = {
             const { text, image } = req.body;
             const { id: receiverId } = req.params;
             const senderId = req.user.id;
+
+            const sender = await User.findById(senderId);
+            const receiver = await User.findById(receiverId);
+
+            if (!sender || !receiver) {
+                return res.status(404).json({ message: "Users not found" });
+            }
+
+            
             let imageUrl;
             if(image){
                 const uploadResponse = await cloudinary.uploader.upload(image);
@@ -52,8 +61,8 @@ module.exports = {
 
             res.status(201).json(newMessage);
         } catch (error) {
-            console.log("Error al enviar el mensaje:", error);
-            res.status(500).json({ message: "Error interno en el servidor" });
+            console.log("Error sending message:", error);
+            res.status(500).json({ message: "Internal server error" });
         }
     }
 }

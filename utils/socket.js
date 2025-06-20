@@ -10,10 +10,27 @@ const io = new Server(server,{
         origin: ["http://localhost:5173"],
     }
 })
+
+const connectedUsers = new Map();
+
 io.on("connection",(socket)=>{
+    const userId = socket.handshake.query.userId;
+
+    if(userId){
+        connectedUsers.set(userId, socket.id);
+         io.emit("getOnlineUsers", Array.from(connectedUsers.keys()));
+    }
     console.log("Nuevo usuario conectado");
     socket.on("disconnect", () => {
+        connectedUsers.delete(socket.id);
         console.log("Usuario desconectado ",socket.id);
+         io.emit("getOnlineUsers", Array.from(connectedUsers.keys()));
     });
+    socket.on("chat message", (msg) => {
+        const receiverSocketId = connectedUsers.get(msg.receiverId);
+        if(receiverSocketId){
+            io.to(receiverSocketId).emit("chat message", msg);
+        }
+    })
 })
 module.exports = {io, server, app};
