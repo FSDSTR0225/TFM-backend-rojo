@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/userModel");
 const generateToken = require("../utils/generateToken");
 const transporter = require("../controllers/emailController");
-const generateWelcomeEmail = require("../utils/emailTemplate");
+const { generateWelcomeEmail } = require("../utils/emailTemplate");
 module.exports = {
   getUsers: async (req, res) => {
     try {
@@ -38,7 +38,7 @@ module.exports = {
     }
   },
 
-  register: async (req, res) => {
+register: async (req, res) => {
     try {
       const { name, surname, email, password, role } = req.body;
       console.log(req.body);
@@ -80,7 +80,7 @@ module.exports = {
           from: `"Codepply" <codepply.team@gmail.com>`,
           to: newUser.email,
           subject: "Welcome to Codepply!",
-          text: `Hola ${newUser.name}, gracias por registrarte en Codepply!`,
+          text: `Hey ${newUser.name}, thanks to join Codepply!`,
           html: generateWelcomeEmail(newUser.name),
         });
         console.log("📨 Mail enviado correctamente:", info);

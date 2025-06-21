@@ -127,4 +127,81 @@ function generateWelcomeEmail(name) {
 `;
 }
 
-module.exports = generateWelcomeEmail;
+function ApplyEmail(position, company, name) {
+  return `
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Welcome to Codepply</title>
+    <style>
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <!-- HEADER -->
+      <header>
+        <div class="logo-wrapper">
+        <img
+          src="https://res.cloudinary.com/djxyqh8fx/image/upload/v1750514141/Logo_gradient_png_bdvjnt.png"
+          alt="Codepply Icon"
+          class="logo"
+        />
+      </div>
+      </header>
+
+      <!-- CONTENT -->
+      <div class="content">
+        <h1>${name}, you applied in offer ${position} of ${company}<h1>
+
+      <!-- FOOTER -->
+      <div class="footer">
+        © ${new Date().getFullYear()} Codepply. All rights reserved.
+      </div>
+    </div>
+  </body>
+</html>
+`;
+}
+
+function RejectEmail(name) {
+  return `
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Welcome to Codepply</title>
+    <style>
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <!-- HEADER -->
+      <header>
+        <div class="logo-wrapper">
+        <img
+          src="https://res.cloudinary.com/djxyqh8fx/image/upload/v1750514141/Logo_gradient_png_bdvjnt.png"
+          alt="Codepply Icon"
+          class="logo"
+        />
+      </div>
+      </header>
+
+      <!-- CONTENT -->
+      <div class="content">
+        <h1>${name}, you have been rejected in an offer! 👋</h1>
+
+      <!-- FOOTER -->
+      <div class="footer">
+        © ${new Date().getFullYear()} Codepply. All rights reserved.
+      </div>
+    </div>
+  </body>
+</html>
+`;
+}
+
+module.exports = { generateWelcomeEmail, ApplyEmail, RejectEmail };
+

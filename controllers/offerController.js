@@ -1,10 +1,12 @@
-
-
 const mongoose = require("mongoose");
 const Offer = require('../models/offerModel');
+const User = require('../models/userModel');
 const technologies = require('../tecnologias/programacion');
 const fs = require('fs');
 const pdfkit = require('pdfkit');
+const transporter = require("../controllers/emailController");
+const { ApplyEmail } = require("../utils/emailTemplate");
+
 module.exports = {
     getOffers: async (req, res) => {
         try {
@@ -208,6 +210,25 @@ module.exports = {
                 .populate('owner')
                 .populate('applicants.user', 'name email') // Opcional: popular datos del usuario
 
+            const currentApplicant = updatedOffer.applicants.find(app => 
+                app.user._id.toString() === userId
+            );
+            try {
+            const info = await transporter.sendMail({
+                from: `"Codepply" <codepply.team@gmail.com>`,
+                to: currentApplicant.user.email,
+                subject: `Hey ${currentApplicant.user.name}, you applied in ${offer.position} of ${offer.company}`,
+                text: `Hey ${currentApplicant.user.name}, you applied in ${offer.position} of ${offer.company}.`,
+                html: ApplyEmail(offer.position, currentApplicant.user.name, offer.company),
+            });
+            console.log("Email enviado:", info);
+            } catch (mailError) {
+            console.error("Error enviando el correo:", mailError);
+            // opcional: podrías continuar sin cortar el registro, o cortar aquí si es crítico
+            return res
+                .status(500)
+                .json({ msg: "Error enviando correo de aplicar en oferta" });
+            }
 
             return res.status(200).json({
                 msg: 'Application completed successfully',
