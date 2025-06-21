@@ -33,6 +33,7 @@ updateDevProfile: async (req, res) => {
       role: {
         developer: {
           professionalPosition,
+          experienceYears,
           location,
           linkedin,
           github,
@@ -42,14 +43,19 @@ updateDevProfile: async (req, res) => {
       } = {}
     } = req.body;
 
-    if (
-      !_id || 
-      // !professionalPosition || 
-      // !location ||
-      // !Array.isArray(skills) || skills.length === 0 ||
-      !Array.isArray(languages) || languages.length === 0 
-    ) {
-      return res.status(400).json({ msg: 'Some required fields are missing' });
+    // Validación más flexible
+    if (!_id) {
+      return res.status(400).json({ msg: '_id is required' });
+    }
+
+    // Validar que languages sea un array válido (pero permitir array vacío)
+    if (languages && !Array.isArray(languages)) {
+      return res.status(400).json({ msg: 'Languages must be an array' });
+    }
+
+    // Validar que skills sea un array válido (pero permitir array vacío)
+    if (skills && !Array.isArray(skills)) {
+      return res.status(400).json({ msg: 'Skills must be an array' });
     }
   
     const user = await User.findById(_id);
@@ -65,30 +71,62 @@ updateDevProfile: async (req, res) => {
       return res.status(400).json({ msg: 'User must have the role of "developer"' });
     }
 
-    const updatedFields = {
-      name,
-      avatar,
-      surname,
-      description,
-      role: {
-        ...user.role,
-        developer: {
-          ...user.role.developer,
-          professionalPosition,
-          location,
-          linkedin,
-          github,
-          skills,
-          languages
-        }
-      }
-    };
-  const updatedUser = await User.findByIdAndUpdate(_id, updatedFields, { new: true });
-
-  res.status(200).json({ msg: 'Developer profile updated successfully', user: updatedUser });
-    } catch (error) {
-    res.status(500).json({ msg: error.message });
+    // Inicializar developer si no existe
+    if (!user.role.developer) {
+      user.role.developer = {};
     }
-  },
+
+    const updateFields = {};
+    
+    // Campos de nivel superior (solo si vienen en el request)
+    if (name !== undefined) updateFields.name = name;
+    if (avatar !== undefined) updateFields.avatar = avatar;
+    if (surname !== undefined) updateFields.surname = surname;
+    if (description !== undefined) updateFields.description = description;
+
+        // Campos del developer usando dot notation
+    if (professionalPosition !== undefined) updateFields['role.developer.professionalPosition'] = professionalPosition;
+    if (experienceYears !== undefined) updateFields['role.developer.experienceYears'] = experienceYears;
+    if (location !== undefined) updateFields['role.developer.location'] = location;
+    if (linkedin !== undefined) updateFields['role.developer.linkedin'] = linkedin;
+    if (github !== undefined) updateFields['role.developer.github'] = github;
+
+    // Arrays: filtrar valores vacíos
+    if (skills !== undefined && Array.isArray(skills)) {
+      const filteredSkills = skills.filter(skill => skill && skill.trim() !== '');
+      updateFields['role.developer.skills'] = filteredSkills;
+    }
+    
+    if (languages !== undefined && Array.isArray(languages)) {
+      const filteredLanguages = languages.filter(lang => 
+        lang && lang.language && lang.language.trim() !== '' && 
+        lang.languageLevel && lang.languageLevel.trim() !== ''
+      );
+      updateFields['role.developer.languages'] = filteredLanguages;
+    }
+
+    console.log('Update fields:', updateFields); // Debug
+
+    const updatedUser = await User.findByIdAndUpdate(
+      _id, 
+      updateFields, 
+      { 
+        new: true, 
+        runValidators: true,
+        upsert: false 
+      }
+    );
+  console.log ('Updated user:', updatedUser); // Debug
+
+    res.status(200).json({ 
+      msg: 'Developer profile updated successfully', 
+      user: updatedUser 
+    });
+    
+  } catch (error) {
+    console.error('Error updating dev profile:', error);
+    res.status(500).json({ msg: error.message });
+  }
+}
 
 }
