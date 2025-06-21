@@ -43,17 +43,14 @@ updateDevProfile: async (req, res) => {
       } = {}
     } = req.body;
 
-    // Validación más flexible
     if (!_id) {
       return res.status(400).json({ msg: '_id is required' });
     }
 
-    // Validar que languages sea un array válido (pero permitir array vacío)
     if (languages && !Array.isArray(languages)) {
       return res.status(400).json({ msg: 'Languages must be an array' });
     }
 
-    // Validar que skills sea un array válido (pero permitir array vacío)
     if (skills && !Array.isArray(skills)) {
       return res.status(400).json({ msg: 'Skills must be an array' });
     }
@@ -71,27 +68,23 @@ updateDevProfile: async (req, res) => {
       return res.status(400).json({ msg: 'User must have the role of "developer"' });
     }
 
-    // Inicializar developer si no existe
     if (!user.role.developer) {
       user.role.developer = {};
     }
 
     const updateFields = {};
     
-    // Campos de nivel superior (solo si vienen en el request)
     if (name !== undefined) updateFields.name = name;
     if (avatar !== undefined) updateFields.avatar = avatar;
     if (surname !== undefined) updateFields.surname = surname;
     if (description !== undefined) updateFields.description = description;
 
-        // Campos del developer usando dot notation
     if (professionalPosition !== undefined) updateFields['role.developer.professionalPosition'] = professionalPosition;
     if (experienceYears !== undefined) updateFields['role.developer.experienceYears'] = experienceYears;
     if (location !== undefined) updateFields['role.developer.location'] = location;
     if (linkedin !== undefined) updateFields['role.developer.linkedin'] = linkedin;
     if (github !== undefined) updateFields['role.developer.github'] = github;
 
-    // Arrays: filtrar valores vacíos
     if (skills !== undefined && Array.isArray(skills)) {
       const filteredSkills = skills.filter(skill => skill && skill.trim() !== '');
       updateFields['role.developer.skills'] = filteredSkills;
@@ -105,8 +98,6 @@ updateDevProfile: async (req, res) => {
       updateFields['role.developer.languages'] = filteredLanguages;
     }
 
-    console.log('Update fields:', updateFields); // Debug
-
     const updatedUser = await User.findByIdAndUpdate(
       _id, 
       updateFields, 
@@ -116,7 +107,6 @@ updateDevProfile: async (req, res) => {
         upsert: false 
       }
     );
-  console.log ('Updated user:', updatedUser); // Debug
 
     res.status(200).json({ 
       msg: 'Developer profile updated successfully', 
