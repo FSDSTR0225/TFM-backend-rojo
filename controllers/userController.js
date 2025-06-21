@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const User = require("../models/userModel");
-const generateToken = require("../utils/generateToken")
-
+const generateToken = require("../utils/generateToken");
+const transporter = require('../index');
+const generateWelcomeEmail = require('../utils/emailTemplate');
 module.exports = {
 
 
@@ -69,7 +70,18 @@ module.exports = {
 
       // Save the user
       await newUser.save();
+
+      await transporter.sendMail({
+        from: process.env.SENDER_SMTP_USER, // toma el user del .env automáticamente
+        to: newUser.email,                   // destinatario
+        subject: 'Welcome to Codepply!',
+        text: `Hola ${newUser.name}, gracias por registrarte en Codepply!`,
+        html: generateWelcomeEmail(newUser.name),
+      });
+
       const { password: _, ...userData } = newUser.toObject();
+
+
       res.status(201).json({
         msg: 'User created successfully',
         user: userData,

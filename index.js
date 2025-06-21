@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const nodemailer = require('nodemailer');
 require("dotenv").config();
 
 //Routers Main
@@ -15,6 +16,17 @@ const studyRouter = require("./routes/studyRouter");
 const app = express();
 const port = process.env.PORT;
 const cors = require('cors');
+
+// Crea el transportador SMTP con Sender
+const transporter = nodemailer.createTransport({
+  host: 'smtp-relay.sender.net', // SMTP de Sender
+  port: 587,
+  secure: false, // true solo si usas puerto 465
+  auth: {
+    user: process.env.SENDER_SMTP_USER, // usuario SMTP (normalmente tu email o user específico)
+    pass: process.env.SENDER_SMTP_PASS  // contraseña SMTP (API key SMTP)
+  }
+});
 
 app.use(cors());
 app.use(express.json());
