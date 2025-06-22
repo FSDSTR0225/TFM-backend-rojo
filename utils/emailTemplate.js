@@ -97,56 +97,48 @@ function ApplyEmail(position, company, name, avatar, email) {
       "
     >
       <!-- HEADER -->
-      <header
-        style="
-          background-color: #000000;
-          padding: 20px 30px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        "
-      >
-        <div class="logo-wrapper" style="text-align: left">
-          <img
-            src="https://res.cloudinary.com/djxyqh8fx/image/upload/v1750581583/logo_gradient_y_white_2_tswzbs.png"
-            alt="Codepply Icon"
-            class="logo"
-            style="max-width: 150px; height: auto; display: inline-block"
-          />
-        </div>
-        <div class="user-avatar-wrapper" style="text-align: right">
-          <img
-            src="${avatar}"
-            alt="User Avatar"
-            class="user-avatar"
-            style="
-              height: 60px;
-              width: 60px;
-              border-radius: 50%;
-              object-fit: cover;
-              display: inline-block;
-              margin: 0;
-            "
-          />
-        </div>
-      </header>
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #000000; padding: 20px 30px;">
+        <tr>
+          <td align="left" valign="middle" style="padding: 10px;">
+            <img
+              src="https://res.cloudinary.com/djxyqh8fx/image/upload/v1750581583/logo_gradient_y_white_2_tswzbs.png"
+              alt="Codepply Icon"
+              style="max-width: 150px; height: auto; display: block;"
+            />
+          </td>
+          <td align="right" valign="middle" style="padding: 10px;">
+            <img
+              src="${avatar}"
+              alt="User Avatar"
+              style="
+                height: 60px;
+                width: 60px;
+                border-radius: 50%;
+                object-fit: cover;
+                display: block;
+              "
+            />
+          </td>
+        </tr>
+      </table>
+
 
       <!-- CONTENT -->
-      <div
+        <div
         class="content"
         style="padding: 30px 70px; background-color: #171717"
       >
         <h1
           style="
-            font-size: 26px;
-            background: linear-gradient(to right, #37c848, #60aaff);
+            font-size: 25px;
+            background: linear-gradient(to right, #3392ff, #37c848);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
             -webkit-text-fill-color: transparent;
-            font-weight: bold;
+            font-weight: semibold;
             display: inline-block;
-            text-align: center;
+            text-align: left;
             width: 100%;
           "
         >
@@ -190,6 +182,9 @@ function ApplyEmail(position, company, name, avatar, email) {
           carefully. If your profile aligns with what they're looking for, you
           may be contacted for the next steps in the process.
         </p>
+        <p style="font-size: 15px; margin-bottom: 20px; color: #ffffff">
+          Good luck — we’re rooting for you!
+        </p>
         <div class="button" style="margin-top: 30px; margin-bottom: 30px">
           <a
             href="https://www.google.com"
@@ -206,9 +201,6 @@ function ApplyEmail(position, company, name, avatar, email) {
             View application
           </a>
         </div>
-        <p style="font-size: 15px; margin-bottom: 20px; color: #ffffff">
-          Good luck — we’re rooting for you!
-        </p>
       </div>
 
       <!-- FOOTER -->
@@ -235,7 +227,7 @@ function ApplyEmail(position, company, name, avatar, email) {
         reply directly to this email. For more information, please refer to our
         privacy policy.
 
-        <span style="margin-top: 20px; display: block; font-size: 12px"
+        <span style="margin-top: 20px; display: block"
           >© ${new Date().getFullYear()} Codepply. All rights reserved.</span
         >
       </div>
