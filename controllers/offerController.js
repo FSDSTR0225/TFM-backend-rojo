@@ -6,7 +6,7 @@ const fs = require('fs');
 const pdfkit = require('pdfkit');
 const transporter = require("../controllers/emailController");
 const { ApplyEmail } = require("../utils/emailTemplate");
-const { StatusReviewedEmail, StatusRejectedEmail } = require("../utils/emailTemplate");
+const { StatusReviewedEmail, StatusRejectedEmail, CreateOfferEmail } = require("../utils/emailTemplate");
 
 module.exports = {
     getOffers: async (req, res) => {
@@ -87,15 +87,47 @@ module.exports = {
 
             const offer = await Offer.create({
                 position, role, location, contractType, company, salary: salaryNumber, skills, description, language, owner: userId
-            })
-            res.status(201).json({
-                msg: 'Offer created successfully',
-                offer
-            })
-        } catch (error) {
-            res.status(500).json({ msg: error.message });
-        }
-    },
+            }) 
+
+            console.log("Oferta creada. esta es su id: ", offer._id);
+
+            const createdOffer = await Offer.findById(offer._id)
+                .populate('owner', 'name surname email avatar');
+
+            if (!createdOffer || !createdOffer.owner) {
+                console.error('Owner not found creating offer');
+                return res.status(500).json({ msg: 'Error finding recruiter data' });
+            }
+
+            if (!createdOffer.owner.email) {
+                console.error('Recruiter Email not found');
+                return res.status(500).json({ msg: 'Error finding email of recruiter' });
+            }
+
+            try {
+            const info = await transporter.sendMail({
+                from: `"Codepply" <codepply.team@gmail.com>`,
+                to: createdOffer.owner.email,
+                subject: `Offer created Successfully - ${position} at ${company}`,
+                text: `${createdOffer.owner.name}, your job offer for ${position} at ${company} has been created successfully`,
+                html: CreateOfferEmail( position, company, createdOffer.owner.name, createdOffer.owner.avatar, createdOffer.owner.email
+                ),
+            });
+                    
+                console.log("Offer creation email sent:", info);
+            } catch (mailError) {
+                console.error("Error sending offer creation email:", mailError);
+            }
+
+                res.status(201).json({
+                    msg: 'Offer created successfully',
+                    offer: createdOffer
+                });
+
+            } catch (error) {
+                res.status(500).json({ msg: error.message });
+            }
+        },
 
     updateOffer: async (req, res) => {
         try {
@@ -225,7 +257,6 @@ module.exports = {
             console.error('Usuario sin email');
             return res.status(500).json({ msg: 'User email not found' });
         }
-
 
             try {
             const info = await transporter.sendMail({
