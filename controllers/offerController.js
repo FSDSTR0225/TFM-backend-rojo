@@ -6,6 +6,7 @@ const fs = require('fs');
 const pdfkit = require('pdfkit');
 const transporter = require("../controllers/emailController");
 const { ApplyEmail } = require("../utils/emailTemplate");
+const { StatusReviewedEmail, StatusRejectedEmail } = require("../utils/emailTemplate");
 
 module.exports = {
     getOffers: async (req, res) => {
@@ -313,31 +314,50 @@ module.exports = {
             // 7) Re-popular datos del candidato actualizado
             await offer.populate('applicants.user', 'name surname email avatar developer');
 
-            const candidateStatus = offer.applicants[candidateIndex].status;
+            const updatedCandidate = offer.applicants[candidateIndex];
 
-            try {
-                const statusMessage = {
-                    'rejected': 'Sorry, your application has been rejected',
-                    'accepted': 'Congratulations! Your application has been accepted'
-                };
-
-                const statusSubject = {
-                    'rejected': 'Sorry, your application has been rejected',
-                    'accepted': 'Congratulations! Your application has been accepted'
-                }
-            
-            const info = await transporter.sendMail({
-                from: `"Codepply" <codepply.team@gmail.com>`,
-                to: candidateStatus.user.email,
-                subject: `${statusSubject[status]}, - ${offer.position} in ${offer.company}`,
-                text: `Hey ${applicants.user.name}, ${statusMessage[status]} in ${offer.position} of ${offer.company}.`,
-                html: ApplyEmail(offer.position, offer.company, applicants.user.name, applicants.user.avatar, applicants.user.email ),
-            });
-            console.log("Email de aceptar/rechazar oferta, enviado:", info);
-            } catch (error) {
-                console.error("Error en email de aceptar/rechazar oferta: ", error);
+            if (!updatedCandidate || !updatedCandidate.user) {
+                console.error('User not found');
+                return res.status(500).json('User not found');
             }
-        
+
+            if (!updatedCandidate.user.email) {
+                console.error('Email not found');
+                return res.status(500).json('Email not found');
+            }
+
+
+            if (status === 'reviewed') {
+                try {
+
+                const info = await transporter.sendMail({
+                    from: `"Codepply" <codepply.team@gmail.com>`,
+                    to: updatedCandidate.user.email,
+                    subject: `Great news — You're one step closer to joining at ${offer.company}`,
+                    text: `Great news — you've moved on to the next step in the hiring process!`,
+                    html: StatusReviewedEmail(offer.position, offer.company, updatedCandidate.user.name, updatedCandidate.user.avatar, updatedCandidate.user.email ),
+                });
+                console.log("Email de aceptar/rechazar oferta, enviado:", info);
+                } catch (error) {
+                    console.error("Error en email de aceptar/rechazar oferta: ", error);
+                }
+            }
+
+            if (status === 'rejected') {
+                try {
+
+                const info = await transporter.sendMail({
+                    from: `"Codepply" <codepply.team@gmail.com>`,
+                    to: updatedCandidate.user.email,
+                    subject: `Your application at ${offer.company} has reviewed`,
+                    text: `The company has reviewed your application and made a decision`,
+                    html: StatusRejectedEmail(offer.position, offer.company, updatedCandidate.user.name, updatedCandidate.user.avatar, updatedCandidate.user.email ),
+                });
+                console.log("Email de aceptar/rechazar oferta, enviado:", info);
+                } catch (error) {
+                    console.error("Error en email de aceptar/rechazar oferta: ", error);
+                }
+            }
 
             return res.status(200).json({
                 msg: 'Estado del candidato actualizado correctamente',
@@ -348,6 +368,7 @@ module.exports = {
             console.error('Error updating candidate status:', error);
             return res.status(500).json({ msg: error.message });
         }
+        
     },
     getOffersAppliedByDev: async (req, res) => {
         try {
