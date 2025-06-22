@@ -109,19 +109,21 @@ module.exports = {
                     to: createdOffer.owner.email,
                     subject: `Offer created Successfully - ${position} at ${company}`,
                     text: `${createdOffer.owner.name}, your job offer for ${position} at ${company} has been created successfully`,
-                    html: CreateOfferEmail( position, company, createdOffer.owner.name, createdOffer.owner.avatar, createdOffer.owner.email),
+                    html: CreateOfferEmail(position, company, createdOffer.owner.name, createdOffer.owner.avatar, createdOffer.owner.email),
                 });
-                        
-                    console.log("Offer creation email sent:", info);
+
+                console.log("Offer creation email sent:", info);
                 } catch (mailError) {
-                    console.error("Error sending offer creation email:", mailError);
-                    return res.status(500).json({ msg: 'Oferta creada, pero fallo al enviar email' });
+                console.error("Error sending offer creation email:", mailError);
+                // No hacer return ni cortar aquí
                 }
 
-            res.status(201).json({
+                res.status(201).json({
                 msg: 'Offer created successfully',
-                offer: createdOffer
-            });
+                offer: createdOffer,
+                // podrías añadir info si quieres, ej:
+                // mailSent: !mailError
+                });
 
             } catch (error) {
                 res.status(500).json({ msg: error.message });
