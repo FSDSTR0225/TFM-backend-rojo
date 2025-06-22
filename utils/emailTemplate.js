@@ -51,38 +51,30 @@ function generateWelcomeEmail(name) {
       <!-- CONTENT -->
       <div
         class="content"
-        style="padding: 30px 70px; background-color: #171717"
+        style="padding: 30px 70px; background-color: #171717; text-align: center; justify-content: center;"
       >
-        <div
-          style="
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin: 0 auto 30px auto;
-            text-align: left;
-            width: fit-content;
-          "
-        >
-          <img
-            src="https://res.cloudinary.com/djxyqh8fx/image/upload/v1750603341/star-final_gepdac.png"
-            alt="star"
-            style="width: 70px; height: auto; display: block; flex-shrink: 0"
-          />
-          <h1
-            style="
-              font-size: 26px;
-              background: linear-gradient(to right, #37c848, #60aaff);
-              background-clip: text;
-              -webkit-background-clip: text;
-              color: transparent;
-              -webkit-text-fill-color: transparent;
-              font-weight: bold;
-              margin: 0;
-            "
-          >
-            Welcome ${name}!
-          </h1>
+            <h1
+              style="
+                font-size: 26px;
+                background: linear-gradient(to right, #37c848, #60aaff);
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+                -webkit-text-fill-color: transparent;
+                font-weight: bold;
+                line-height: 1;
+                margin: 0 0 16px 0;
+                width: 100%;
+              "
+            >
+              Welcome ${name}!
+            </h1>
+
+         <div style="text-align: center; margin: 0 auto 30px auto;">
+          <img src="https://res.cloudinary.com/djxyqh8fx/image/upload/v1750620912/heart_2_ft15ih.png" alt="heart" style="width: 180px; height: 179px; display: inline-block;" />
         </div>
+
+
         <p
           style="
             font-size: 16px;
@@ -269,7 +261,7 @@ function ApplyEmail(position, company, name, avatar, email) {
         <div
           style="
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 20px;
             margin-bottom: 30px;
           "
@@ -278,7 +270,7 @@ function ApplyEmail(position, company, name, avatar, email) {
             src="https://res.cloudinary.com/djxyqh8fx/image/upload/v1750604069/bell_ozpy2w.png"
             alt="Codepply Isotipo"
             class="logo"
-            style="max-width: 75px; height: auto; display: inline-block"
+            style="width: 75px; height: 83px; display: inline-block"
           />
           <h1
             style="
@@ -292,6 +284,8 @@ function ApplyEmail(position, company, name, avatar, email) {
               display: inline-block;
               text-align: left;
               width: 100%;
+              margin-top: 0;
+              padding-top: 0;
             "
           >
             ${name}, you’ve successfully applied to
@@ -873,23 +867,9 @@ function CreateOfferEmail(position, company, name, avatar, email) {
           text-align: center;
           position: relative;
           overflow: hidden;
-          padding: 30px 70px 75px;
+          padding: 30px 70px 30px;
         "
       >
-        <!-- Imagen decorativa anclada abajo -->
-        <img
-          src="https://res.cloudinary.com/djxyqh8fx/image/upload/v1750608214/createoffer_eg5tob.png"
-          alt="Decor"
-          style="
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: auto;
-            z-index: 0;
-          "
-        />
-
         <!-- Encabezado (fuera del área con imagen) -->
         <h1
           style="
@@ -913,7 +893,7 @@ function CreateOfferEmail(position, company, name, avatar, email) {
         </h1>
         <h1
           style="
-            font-size: 18px;
+            font-size: 20px;
             background-color: #fff;
             background-clip: text;
             -webkit-background-clip: text;
@@ -924,49 +904,64 @@ function CreateOfferEmail(position, company, name, avatar, email) {
             text-align: center;
             width: 100%;
             line-height: 1.6;
-            margin-bottom: 20px;
             position: relative;
             z-index: 1;
           "
         >
           You’ve successfully created the offer <strong>${position}</strong> for
-          <strong>${company}</strong>. Candidates can now view and apply to it
-          through the platform.
+          <strong>${company}</strong>
         </h1>
+        <p style="color: #fff; padding: 0 40px; font-size: 16px">
+          Candidates can now view and apply to it through the platform
+        </p>
+      </div>
 
-        <!-- Texto + botón encima de la imagen -->
-        <div
-          style="
-            position: relative;
-            z-index: 1;
-            max-width: 500px;
-            margin: 90px auto 0;
-
-            text-align: left;
-          "
+      <!-- Texto + botón encima de la imagen -->
+      <div
+        style="
+          background-image: url('https://res.cloudinary.com/djxyqh8fx/image/upload/v1750613731/createoffer_vert_correcta_uhq8zp.png');
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: cover;
+          background-color: #171717;
+          min-height: 200px;
+          padding: 30px 0;
+          text-align: left;
+          /* Para email, usar tablas para centrar verticalmente */
+        "
+      >
+        <table
+          role="presentation"
+          width="100%"
+          height="200"
+          cellpadding="0"
+          cellspacing="0"
+          border="0"
         >
-          <div style="margin-right: 55%">
-            <p style="font-size: 18px; color: #ffffff">
-              Check candidates profile and offer details:
-            </p>
-          </div>
-          <div class="button" style="margin-top: 10px; margin-bottom: 15px">
-            <a
-              href="https://www.google.com"
-              class="loginbutton"
-              style="
-                color: #ffffff;
-                padding: 8px 14px;
-                border-radius: 12px;
-                text-decoration: none;
-                background-color: #000;
-                display: inline-block;
-              "
+          <tr>
+            <td
+              valign="middle"
+              style="padding-left: 15%; padding-right: 50%; max-width: 300px"
             >
-              Go to offer panel
-            </a>
-          </div>
-        </div>
+              <p style="font-size: 18px; color: #ffffff; margin: 0 0 20px 0">
+                Check candidates profile and offer details:
+              </p>
+              <a
+                href="https://www.google.com"
+                style="
+                  color: #ffffff;
+                  padding: 8px 14px;
+                  border-radius: 12px;
+                  text-decoration: none;
+                  background-color: #000;
+                  display: inline-block;
+                "
+              >
+                Go to offer panel
+              </a>
+            </td>
+          </tr>
+        </table>
       </div>
 
       <!-- FOOTER -->
