@@ -381,7 +381,7 @@ module.exports = {
                 const info = await transporter.sendMail({
                     from: `"Codepply" <codepply.team@gmail.com>`,
                     to: updatedCandidate.user.email,
-                    subject: `Your application at ${offer.company} has reviewed`,
+                    subject: `Your application at ${offer.company} has rejected`,
                     text: `The company has reviewed your application and made a decision`,
                     html: StatusRejectedEmail(offer.position, offer.company, updatedCandidate.user.name, updatedCandidate.user.avatar, updatedCandidate.user.email ),
                 });
