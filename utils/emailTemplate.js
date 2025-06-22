@@ -274,39 +274,36 @@ function StatusRejectedEmail(position, company, name, avatar, email) {
       "
     >
       <!-- HEADER -->
-      <header
-        style="
-          background-color: #000000;
-          padding: 20px 30px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        "
+      <table
+        width="100%"
+        cellpadding="0"
+        cellspacing="0"
+        border="0"
+        style="background-color: #000000; padding: 20px 30px"
       >
-        <div class="logo-wrapper" style="text-align: left">
-          <img
-            src="https://res.cloudinary.com/djxyqh8fx/image/upload/v1750581583/logo_gradient_y_white_2_tswzbs.png"
-            alt="Codepply Icon"
-            class="logo"
-            style="max-width: 150px; height: auto; display: inline-block"
-          />
-        </div>
-        <div class="user-avatar-wrapper" style="text-align: right">
-          <img
-            src="${avatar}"
-            alt="User Avatar"
-            class="user-avatar"
-            style="
-              height: 60px;
-              width: 60px;
-              border-radius: 50%;
-              object-fit: cover;
-              display: inline-block;
-              margin: 0;
-            "
-          />
-        </div>
-      </header>
+        <tr>
+          <td align="left" valign="middle" style="padding: 10px">
+            <img
+              src="https://res.cloudinary.com/djxyqh8fx/image/upload/v1750581583/logo_gradient_y_white_2_tswzbs.png"
+              alt="Codepply Icon"
+              style="max-width: 150px; height: auto; display: block"
+            />
+          </td>
+          <td align="right" valign="middle" style="padding: 10px">
+            <img
+              src="${avatar}"
+              alt="User Avatar"
+              style="
+                height: 60px;
+                width: 60px;
+                border-radius: 50%;
+                object-fit: cover;
+                display: block;
+              "
+            />
+          </td>
+        </tr>
+      </table>
 
       <!-- CONTENT -->
       <div
@@ -316,7 +313,7 @@ function StatusRejectedEmail(position, company, name, avatar, email) {
         <h1
           style="
             font-size: 26px;
-            background: linear-gradient(to right, #37c848, #60aaff);
+            background: linear-gradient(to left, #0077ff, #99c9ff);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
@@ -325,37 +322,13 @@ function StatusRejectedEmail(position, company, name, avatar, email) {
             display: inline-block;
             text-align: center;
             width: 100%;
+            margin-bottom: 25px;
           "
         >
-          ${name}, LO SIENTO HERMANO ou’ve successfully applied to
-          <span
-            style="
-              font-weight: bold;
-              font-size: inherit;
-              background-color: #ffffff;
-              background-clip: text;
-              -webkit-background-clip: text;
-              color: transparent;
-              -webkit-text-fill-color: transparent;
-            "
-            >${position}</span
-          >
-
-          at
-          <span
-            style="
-              font-weight: bold;
-              font-size: inherit;
-              background-color: #ffffff;
-              background-clip: text;
-              -webkit-background-clip: text;
-              color: transparent;
-              -webkit-text-fill-color: transparent;
-            "
-            >${company}!</span
-          >
+          Unfortunately, your application was not selected this time
         </h1>
-        <p
+
+        <div
           style="
             font-size: 15px;
             line-height: 1.6;
@@ -363,29 +336,62 @@ function StatusRejectedEmail(position, company, name, avatar, email) {
             color: #ffffff;
           "
         >
-          The hiring team has received your application and will review it
-          carefully. If your profile aligns with what they're looking for, you
-          may be contacted for the next steps in the process.
-        </p>
-        <div class="button" style="margin-top: 30px; margin-bottom: 30px">
-          <a
-            href="https://www.google.com"
-            class="loginbutton"
+          <p>Hi <strong>${name}</strong>,</p>
+          <p>
+            Thanks for applying to <strong>${company}</strong>. After reviewing
+            your application for the <strong>${position}</strong> role, we've
+            decided to move forward with other candidates. We appreciate your
+            interest and encourage you to apply again in the future.
+          </p>
+          <hr
             style="
-              color: #ffffff;
-              padding: 8px 14px;
-              border-radius: 12px;
-              text-decoration: none;
-              background-color: #0077ff;
-              display: inline-block;
+              border: none;
+              border-top: 1px solid #262626;
+              margin: 30px 0;
+              width: 100%;
+            "
+          />
+          <div
+            class="help"
+            style="
+              background-image: url('https://res.cloudinary.com/djxyqh8fx/image/upload/v1750590359/rejected-more-offers_nxhje0.png');
+              background-repeat: no-repeat;
+              background-size: cover;
+              background-position: center;
+              padding: 10px 30px;
+              border-radius: 10px;
+              text-align: left;
             "
           >
-            View application
-          </a>
+            <h4
+              style="
+                color: white;
+                font-size: 18px;
+                font-weight: 500;
+                margin-top: 8px;
+                margin-bottom: 14px;
+              "
+            >
+              Keep going — more opportunities ahead!
+            </h4>
+            <a
+              href="mailto:codeapply.team@gmail.com"
+              class="helpbutton"
+              style="
+                color: #ffffff;
+                font-size: 14px;
+                padding: 8px 14px;
+                border-radius: 12px;
+                text-decoration: none;
+                background-color: #000000;
+                display: inline-block;
+                margin-bottom: 10px;
+              "
+            >
+              View more offers
+            </a>
+          </div>
         </div>
-        <p style="font-size: 15px; margin-bottom: 20px; color: #ffffff">
-          Good luck — we’re rooting for you!
-        </p>
       </div>
 
       <!-- FOOTER -->
@@ -792,7 +798,10 @@ function CreateOfferEmail(position, company, name, avatar, email) {
 `;
 }
 
-
-
-module.exports = { generateWelcomeEmail, ApplyEmail, StatusReviewedEmail, StatusRejectedEmail, CreateOfferEmail };
-
+module.exports = {
+  generateWelcomeEmail,
+  ApplyEmail,
+  StatusReviewedEmail,
+  StatusRejectedEmail,
+  CreateOfferEmail,
+};
