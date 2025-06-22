@@ -274,97 +274,95 @@ module.exports = {
         }
     },
 
-    // updateCandidateStatus: async (req, res) => {
-    //     try {
-    //         const { id: offerId, candidateId } = req.params;
-    //         const { status } = req.body;
-    //         const userId = req.user.id;
-    //         const roleUser = req.user.role;
-    //         console.log('Updating candidate status:', { offerId, candidateId, status });
-    //         // 1) Validar rol
-    //         if (roleUser !== 'recruiter') {
-    //             return res.status(403).json({ msg: 'No tienes permiso para editar candidatos' });
-    //         }
-    //         // 2) Validar valor de status
-    //         const validStatuses = ['pending', 'reviewed', 'interviewed', 'rejected', 'accepted'];
-    //         if (!validStatuses.includes(status)) {
-    //             return res.status(400).json({ msg: 'Valor de status no válido' });
-    //         }
-    //         // 3) Buscar la oferta
-    //         const offer = await Offer.findById(offerId);
-    //         if (!offer) {
-    //             return res.status(404).json({ msg: 'Oferta no encontrada' });
-    //         }
-    //         // 4) Comprobar ownership
-    //         if (!offer.owner.equals(userId)) {
-    //             return res.status(403).json({ msg: 'No tienes permiso para actualizar este candidato' });
-    //         }
-    //         // 5) Localizar índice del candidato
-    //         const candidateIndex = offer.applicants.findIndex(app =>
-    //             app._id.equals(candidateId)
-    //         );
-    //         if (candidateIndex === -1) {
-    //             return res.status(404).json({ msg: 'Candidate not found in this offer' });
-    //         }
-    //         // 6) Actualizar estado y guardar
-    //         offer.applicants[candidateIndex].status = status;
-    //         await offer.save();
+    updateCandidateStatus: async (req, res) => {
+        try {
+            const { id: offerId, candidateId } = req.params;
+            const { status } = req.body;
+            const userId = req.user.id;
+            const roleUser = req.user.role;
+            console.log('Updating candidate status:', { offerId, candidateId, status });
+            // 1) Validar rol
+            if (roleUser !== 'recruiter') {
+                return res.status(403).json({ msg: 'No tienes permiso para editar candidatos' });
+            }
+            // 2) Validar valor de status
+            const validStatuses = ['pending', 'reviewed', 'interviewed', 'rejected', 'accepted'];
+            if (!validStatuses.includes(status)) {
+                return res.status(400).json({ msg: 'Valor de status no válido' });
+            }
+            // 3) Buscar la oferta
+            const offer = await Offer.findById(offerId);
+            if (!offer) {
+                return res.status(404).json({ msg: 'Oferta no encontrada' });
+            }
+            // 4) Comprobar ownership
+            if (!offer.owner.equals(userId)) {
+                return res.status(403).json({ msg: 'No tienes permiso para actualizar este candidato' });
+            }
+            // 5) Localizar índice del candidato
+            const candidateIndex = offer.applicants.findIndex(app =>
+                app._id.equals(candidateId)
+            );
+            if (candidateIndex === -1) {
+                return res.status(404).json({ msg: 'Candidate not found in this offer' });
+            }
+            // 6) Actualizar estado y guardar
+            offer.applicants[candidateIndex].status = status;
+            await offer.save();
 
-    //         // 7) Re-popular datos del candidato actualizado
-    //         await offer.populate('applicants.user', 'name surname email avatar developer');
+            // 7) Re-popular datos del candidato actualizado
+            await offer.populate('applicants.user', 'name surname email avatar developer');
 
-    //         const candidateStatus = offer.applicants[candidateIndex].status;
+            const candidateStatus = offer.applicants[candidateIndex].status;
 
-    //         try {
-    //             const statusMessage = {
-    //                 'rejected': 'Sorry, your application has been rejected',
-    //                 'accepted': 'Congratulations! Your application has been accepted'
-    //             };
+            try {
+                const statusMessage = {
+                    'rejected': 'Sorry, your application has been rejected',
+                    'accepted': 'Congratulations! Your application has been accepted'
+                };
 
-    //             const statusSubject = {
-    //                 'rejected': 'Sorry, your application has been rejected',
-    //                 'accepted': 'Congratulations! Your application has been accepted'
-    //             }
+                const statusSubject = {
+                    'rejected': 'Sorry, your application has been rejected',
+                    'accepted': 'Congratulations! Your application has been accepted'
+                }
             
-    //         const info = await transporter.sendMail({
-    //             from: `"Codepply" <codepply.team@gmail.com>`,
-    //             to: candidateStatus.user.email,
-    //             subject: `${statusSubject[status]}, - ${offer.position} in ${offer.company}`,
-    //             text: `Hey ${applicants.user.name}, ${statusMessage[status]} in ${offer.position} of ${offer.company}.`,
-    //             html: ApplyEmail(offer.position, offer.company, applicants.user.name, applicants.user.avatar, applicants.user.email ),
-    //         });
-    //         console.log("Email de aceptar/rechazar oferta, enviado:", info);
-    //         } catch (error) {
-    //             console.error("Error en email de aceptar/rechazar oferta: ", error);
-    //         }
-    //         })
+            const info = await transporter.sendMail({
+                from: `"Codepply" <codepply.team@gmail.com>`,
+                to: candidateStatus.user.email,
+                subject: `${statusSubject[status]}, - ${offer.position} in ${offer.company}`,
+                text: `Hey ${applicants.user.name}, ${statusMessage[status]} in ${offer.position} of ${offer.company}.`,
+                html: ApplyEmail(offer.position, offer.company, applicants.user.name, applicants.user.avatar, applicants.user.email ),
+            });
+            console.log("Email de aceptar/rechazar oferta, enviado:", info);
+            } catch (error) {
+                console.error("Error en email de aceptar/rechazar oferta: ", error);
+            }
+        
 
-    //         }
+            return res.status(200).json({
+                msg: 'Estado del candidato actualizado correctamente',
+                offer: offer
+            });
 
-    //         return res.status(200).json({
-    //             msg: 'Estado del candidato actualizado correctamente',
-    //             offer: offer
-    //         });
-
-    //     } catch (error) {
-    //         console.error('Error updating candidate status:', error);
-    //         return res.status(500).json({ msg: error.message });
-    //     }
-    // },
-    // getOffersAppliedByDev: async (req, res) => {
-    //     try {
-    //         const offers = await Offer.find({
-    //             'applicants.user': req.params.devId,
-    //             isDelete: false
-    //         }).populate([
-    //             { path: 'owner', select: '_id name surname role.type role.recruiter.logo avatar' },
-    //             { path: 'applicants.user', select: 'name email' }
-    //         ]);
-    //         res.status(200).json({ offers });
-    //     } catch (error) {
-    //         res.status(500).json({ msg: error.message });
-    //     }
-    // },
+        } catch (error) {
+            console.error('Error updating candidate status:', error);
+            return res.status(500).json({ msg: error.message });
+        }
+    },
+    getOffersAppliedByDev: async (req, res) => {
+        try {
+            const offers = await Offer.find({
+                'applicants.user': req.params.devId,
+                isDelete: false
+            }).populate([
+                { path: 'owner', select: '_id name surname role.type role.recruiter.logo avatar' },
+                { path: 'applicants.user', select: 'name email' }
+            ]);
+            res.status(200).json({ offers });
+        } catch (error) {
+            res.status(500).json({ msg: error.message });
+        }
+    },
     
     getOffersByDev: async (req, res) => {
         try {
