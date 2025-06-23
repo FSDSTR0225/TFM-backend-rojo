@@ -63,9 +63,9 @@ module.exports = {
         const info = await transporter.sendMail({
           from: `"Codepply" <codepply.team@gmail.com>`,
           to: user.email,
-          subject: "Has cambiado la contraseña mostruo!",
-          text: `Has cambiado la contraseña mostruo!`,
-          html: UpdatePasswordEmail(user.name, user.avatar, user.email),
+          subject: "Your password has been changed!",
+          text: `Your password has been changed!`,
+          html: UpdatePasswordEmail(user.avatar, user.email),
         });
         console.log("Mail enviado correctamente:", info);
       } catch (mailError) {

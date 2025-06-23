@@ -998,10 +998,180 @@ function CreateOfferEmail(position, company, name, avatar, email) {
 `;
 }
 
+function UpdatePasswordEmail(avatar, email) {
+  return `
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <title>Welcome to Codepply</title>
+  </head>
+  <body
+    style="
+      font-family: 'Inter', sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 0;
+      color: #000000;
+      -webkit-text-size-adjust: 100%;
+      text-align: center;
+    "
+  >
+    <div
+      class="wrapper"
+      style="
+        max-width: 600px;
+        margin: 40px auto;
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+      "
+    >
+      <!-- HEADER -->
+      <table
+        width="100%"
+        cellpadding="0"
+        cellspacing="0"
+        border="0"
+        style="background-color: #000000; padding: 20px 30px"
+      >
+        <tr>
+          <td align="left" valign="middle" style="padding: 10px">
+            <img
+              src="https://res.cloudinary.com/djxyqh8fx/image/upload/v1750581583/logo_gradient_y_white_2_tswzbs.png"
+              alt="Codepply Icon"
+              style="max-width: 150px; height: auto; display: block"
+            />
+          </td>
+          <td align="right" valign="middle" style="padding: 10px">
+            <img
+              src="${avatar}"
+              alt="User Avatar"
+              style="
+                height: 60px;
+                width: 60px;
+                border-radius: 50%;
+                object-fit: cover;
+                display: block;
+              "
+            />
+          </td>
+        </tr>
+      </table>
+
+      <!-- CONTENT -->
+      <div
+        class="content"
+        style="padding: 30px 70px; background-color: #171717; text-align: center; justify-content: center;"
+      >
+            <h1
+              style="
+                font-size: 26px;
+                background: linear-gradient(to right, #37c848, #60aaff);
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+                -webkit-text-fill-color: transparent;
+                font-weight: bold;
+                line-height: 1;
+                margin: 0 0 16px 0;
+                width: 100%;
+              "
+            >
+              Your password has been changed!
+            </h1>
+
+         <div style="text-align: center; margin: 0 auto 30px auto;">
+          <img src="https://res.cloudinary.com/djxyqh8fx/image/upload/v1750604075/setting_wkbs7l.png" alt="heart" style="width: 180px; height: 179px; display: inline-block;" />
+        </div>
+
+
+        <p
+          style="
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #ffffff;
+          "
+        >
+          You’ve successfully updated your account password.
+          You can now log in securely with your new credentials.
+        </p>
+        <p
+          style="
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #ffffff;
+          "
+        >
+          Review your account security settings:
+        </p>
+        <div class="button" style="margin-top: 35px; margin-bottom: 60px">
+          <a
+            href="https://www.google.com"
+            class="loginbutton"
+            style="
+              color: #ffffff;
+              padding: 8px 14px;
+              border-radius: 12px;
+              text-decoration: none;
+              background: linear-gradient(to right, #37c848, #0077ff);
+              display: inline-block;
+            "
+          >
+            Go to your account
+          </a>
+        </div>
+        
+      </div>
+
+      <!-- FOOTER -->
+      <div
+        class="footer"
+        style="
+          background-color: #cccccc;
+          padding: 30px 80px;
+          text-align: center;
+          font-size: 11px;
+          color: #595959;
+        "
+      >
+        <div style="margin-bottom: 10px">
+          <img
+            src="https://res.cloudinary.com/djxyqh8fx/image/upload/v1750581914/isotipo_grey_low_opacity_jtgllr.png"
+            alt="Codepply Isotipo"
+            class="logo"
+            style="max-width: 25px; height: auto; display: inline-block"
+          />
+        </div>
+
+        This message was sent to ${email} by an automated system. Please do not
+        reply directly to this email. For more information, please refer to our
+        privacy policy.
+
+        <span style="margin-top: 20px; display: block"
+          >© ${new Date().getFullYear()} Codepply. All rights reserved.</span
+        >
+      </div>
+    </div>
+  </body>
+</html>
+`;
+}
+
 module.exports = {
   generateWelcomeEmail,
   ApplyEmail,
   StatusReviewedEmail,
   StatusRejectedEmail,
   CreateOfferEmail,
+  UpdatePasswordEmail,
 };
