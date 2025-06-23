@@ -4,6 +4,7 @@ const User = require("../models/userModel");
 const generateToken = require("../utils/generateToken");
 const transporter = require("../controllers/emailController");
 const { generateWelcomeEmail } = require("../utils/emailTemplate");
+
 module.exports = {
   getUsers: async (req, res) => {
     try {
@@ -83,9 +84,9 @@ register: async (req, res) => {
           text: `Hey ${newUser.name}, thanks to join Codepply!`,
           html: generateWelcomeEmail(newUser.name),
         });
-        console.log("📨 Mail enviado correctamente:", info);
+        console.log("Mail enviado correctamente:", info);
       } catch (mailError) {
-        console.error("❌ Error enviando el correo:", mailError);
+        console.error("Error enviando el correo:", mailError);
         // opcional: podrías continuar sin cortar el registro, o cortar aquí si es crítico
         return res
           .status(500)

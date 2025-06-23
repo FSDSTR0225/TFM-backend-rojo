@@ -36,6 +36,7 @@ updateDevProfile: async (req, res) => {
           experienceYears,
           location,
           linkedin,
+          resume,
           github,
           skills,
           languages
@@ -80,6 +81,7 @@ updateDevProfile: async (req, res) => {
     if (description !== undefined) updateFields.description = description;
 
     if (professionalPosition !== undefined) updateFields['role.developer.professionalPosition'] = professionalPosition;
+    if (resume !== undefined) updateFields['role.developer.resume'] = resume;
     if (experienceYears !== undefined) updateFields['role.developer.experienceYears'] = experienceYears;
     if (location !== undefined) updateFields['role.developer.location'] = location;
     if (linkedin !== undefined) updateFields['role.developer.linkedin'] = linkedin;

@@ -5,8 +5,7 @@ const technologies = require('../tecnologias/programacion');
 const fs = require('fs');
 const pdfkit = require('pdfkit');
 const transporter = require("../controllers/emailController");
-const { ApplyEmail } = require("../utils/emailTemplate");
-const { StatusReviewedEmail, StatusRejectedEmail, CreateOfferEmail } = require("../utils/emailTemplate");
+const { ApplyEmail, StatusReviewedEmail, StatusRejectedEmail, CreateOfferEmail } = require("../utils/emailTemplate");
 
 module.exports = {
     getOffers: async (req, res) => {
