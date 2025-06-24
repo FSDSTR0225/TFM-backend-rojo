@@ -136,7 +136,7 @@ module.exports = {
     }
 
     try {
-      const regex = new RegExp(q, "i"); // búsqueda case-insensitive
+      const regex = new RegExp(q, "i");
 
       const developers = await User.find({
         "role.type": "developer",

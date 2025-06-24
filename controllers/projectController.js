@@ -217,7 +217,7 @@ module.exports = {
     }
 
     try {
-      const regex = new RegExp(q, "i"); // 'i' para case-insensitive
+      const regex = new RegExp(q, "i");
 
       const projects = await Project.find({
         isDeleted: { $ne: true },
