@@ -1,6 +1,7 @@
 const Message = require("../models/message");
 const cloudinary = require('../utils/cloudinaryService');
 const User = require("../models/userModel");
+const { getReceiverSocketId, io } = require("../utils/socket");
 
 module.exports = {
     getUsers: async (req, res) => {
@@ -49,6 +50,13 @@ module.exports = {
             });
 
             await newMessage.save();
+
+            //RealTime Funcionality goes here => socket.io
+
+            const receiverSocketId = getReceiverSocketId(receiverId);
+            if(receiverSocketId){
+                io.to(receiverSocketId).emit("newMessage", newMessage);
+            } 
 
             res.status(201).json(newMessage);
         } catch (error) {
