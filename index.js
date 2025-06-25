@@ -10,12 +10,13 @@ const recruiterRouter = require("./routes/recruiterRouter");
 const devRouter = require("./routes/devRouter");
 const experienceRouter = require("./routes/experienceRouter");
 const studyRouter = require("./routes/studyRouter");
+const settingsRouter = require("./routes/settingsRouter");
 const uploadRouter = require('./routes/uploadRouter');
 
 //Configuraciones
 const app = express();
 const port = process.env.PORT;
-const cors = require('cors');
+const cors = require("cors");
 
 app.use(cors());
 app.use(express.json());
@@ -42,6 +43,7 @@ app.use("/recruiters", recruiterRouter);
 app.use("/devs", devRouter);
 app.use("/experiences", experienceRouter);
 app.use("/studies", studyRouter);
+app.use("/settings", settingsRouter);
 
 //upload images
 app.use('/', uploadRouter);
