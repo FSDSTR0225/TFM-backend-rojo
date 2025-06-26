@@ -10,6 +10,7 @@ const recruiterRouter = require("./routes/recruiterRouter");
 const devRouter = require("./routes/devRouter");
 const experienceRouter = require("./routes/experienceRouter");
 const studyRouter = require("./routes/studyRouter");
+<<<<<<< HEAD
 const messageRouter = require('./routes/messageRouter');
 //Configuraciones del servidor 
 const { app,server }= require("./utils/socket"); // Importa la instancia de Express desde socket.js
@@ -20,6 +21,15 @@ const cors = require('cors');
 //   console.log(`Server running on port ${port}`);
 // });
 
+=======
+const settingsRouter = require("./routes/settingsRouter");
+const uploadRouter = require('./routes/uploadRouter');
+
+// Configuraciones
+// const app = express();
+// const port = process.env.PORT;
+// const cors = require("cors");
+>>>>>>> dev
 
 app.use(cors());
 app.use(express.json());
@@ -50,7 +60,14 @@ app.use("/recruiters", recruiterRouter);
 app.use("/devs", devRouter);
 app.use("/experiences", experienceRouter);
 app.use("/studies", studyRouter);
+<<<<<<< HEAD
 app.use("/messages",messageRouter);
+=======
+app.use("/settings", settingsRouter);
+
+//upload images
+app.use('/', uploadRouter);
+>>>>>>> dev
 
 server.listen(port, () => {
   console.log(`🚀 Servidor iniciado en http://localhost:${port}`);
