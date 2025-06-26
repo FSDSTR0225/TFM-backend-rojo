@@ -7,7 +7,25 @@ module.exports = {
     getUsers: async (req, res) => {
         try {
             const userLogged = req.user.id;
-            const filteredUsers = await User.find({ _id: { $ne: userLogged } }).select("-password");
+            
+            const messages = await Message.find({
+                $or: [
+                    { senderId: userLogged },
+                    { receiverId: userLogged }
+                ]
+            });
+
+            const userIds = new Set();
+            messages.forEach((message) => {
+                if (message.senderId !== userLogged) {
+                    userIds.add(message.senderId);
+                }
+                if (message.receiverId !== userLogged) {
+                    userIds.add(message.receiverId);
+                }
+            });
+
+            const filteredUsers = await User.find({ _id: { $in: Array.from(userIds) } }).select("-password");
             res.status(200).json(filteredUsers);
         } catch (error) {
             console.log("Error al obtener los usuarios:", error);
