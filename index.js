@@ -25,9 +25,16 @@ const cors = require('cors');
 
 
 app.use(cors({
-    origin: [process.env.SOCKET_URL],
+    origin: process.env.SOCKET_URL,
     methods: ["GET", "POST"],
+    credentials: true,
 }));
+
+app.options("*", cors({
+  origin: process.env.SOCKET_URL,
+  credentials: true,
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: '10mb' }));
