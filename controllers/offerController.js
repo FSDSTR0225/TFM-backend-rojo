@@ -16,7 +16,7 @@ module.exports = {
   getOffers: async (req, res) => {
     try {
       //Filtrado por no borradas
-      const offers = await Offer.find({ isDelete: false }).populate([
+      let offers = await Offer.find({ isDelete: false }).populate([
         {
           path: "owner",
           select: "_id name surname role.type role.recruiter.logo avatar",
@@ -26,9 +26,10 @@ module.exports = {
           select: "appliedDate",
         },
       ]);
+      offers = offers.filter(offer => offer.owner !== null);
       res.json(offers);
     } catch (error) {
-      res.status(500).json({ msg: "Ningun registro de ofertas" });
+     return res.status(500).json({ msg: "Ningun registro de ofertas" });
     }
   },
 
@@ -48,9 +49,10 @@ module.exports = {
           select: "appliedDate",
         },
       ]);
+       
       res.json(offers);
     } catch (error) {
-      res.status(500).json({ msg: "Ningun registro de ofertas" });
+      return res.status(500).json({ msg: "Ningun registro de ofertas" });
     }
   },
 
@@ -302,7 +304,6 @@ module.exports = {
           .status(403)
           .json({ msg: "Only developers can apply for offers." });
       }
-
       const offer = await Offer.findById(offerId);
       if (!offer) return res.status(404).json({ msg: "Offer not found" });
 
@@ -321,6 +322,7 @@ module.exports = {
         gdprAccepted,
       });
       await offer.save();
+
       const updatedOffer = await Offer.findById(offerId)
         .populate("owner")
         .populate("applicants.user", "name email avatar"); // Opcional: popular datos del usuario
@@ -328,6 +330,8 @@ module.exports = {
       const currentApplicant = updatedOffer.applicants.find(
         (app) => app.user._id.toString() === userId
       );
+
+      
 
       if (!currentApplicant) {
         console.error("No se encontró currentApplicant");
@@ -341,6 +345,8 @@ module.exports = {
       }
 
       try {
+        console.log(">>> Control Checkpoint <<<"); 
+      console.log({ offer: updatedOffer, currentApplicant });
         const info = await transporter.sendMail({
           from: `"Codepply" <codepply.team@gmail.com>`,
           to: currentApplicant.user.email,
