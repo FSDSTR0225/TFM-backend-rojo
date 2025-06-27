@@ -22,16 +22,16 @@ const cors = require('cors');
 //   console.log(`Server running on port ${port}`);
 // });
 
-
+const CLIENT_URL = process.env.CLIENT_URL;
 
 app.use(cors({
-    origin: process.env.SOCKET_URL,
+    origin: CLIENT_URL,
     methods: ["GET", "POST"],
     credentials: true,
 }));
 
 app.options("*", cors({
-  origin: process.env.SOCKET_URL,
+  origin: CLIENT_URL, 
   credentials: true,
 }));
 
