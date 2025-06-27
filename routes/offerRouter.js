@@ -1,20 +1,47 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const offerController = require('../controllers/offerController');
-const isAuthenticated = require('../middlewares/auth/isAutenticated');
+const offerController = require("../controllers/offerController");
+const isAuthenticated = require("../middlewares/auth/isAutenticated");
 
-router.get('/', offerController.getOffers);
+//SearchBar
+router.get("/search", offerController.searchOffers);
 
-router.get('/technology', offerController.getTechnology);
+router.get("/", offerController.getOffers);
 
-router.get('/:id', offerController.getOfferById);
+router.get("/technology", offerController.getTechnology);
 
-router.get('/profile/:id', offerController.getOffersByOwner)
+router.get("/bydev", isAuthenticated, offerController.getOffersByDev);
 
-router.post('/', isAuthenticated, offerController.createOffer);
+router.get("/:id", offerController.getOfferById);
 
-router.put('/:id', isAuthenticated, offerController.updateOffer);
+router.get("/profile/:id", offerController.getOffersByOwner);
 
-router.patch('/:id/delete', isAuthenticated, offerController.deleteOffer);
+router.get("/stats/:id", isAuthenticated, offerController.getRecruiterStats);
+
+router.post("/", isAuthenticated, offerController.createOffer);
+
+router.post("/:id/apply", isAuthenticated, offerController.applyToOffer);
+
+router.put("/:id", isAuthenticated, offerController.updateOffer);
+
+router.patch("/:id/delete", isAuthenticated, offerController.deleteOffer);
+
+router.get(
+  "/:id/candidates",
+  isAuthenticated,
+  offerController.getCandidatesByOffer
+);
+
+router.put(
+  "/:id/candidates/:candidateId",
+  isAuthenticated,
+  offerController.updateCandidateStatus
+);
+
+router.get(
+  "/applied/:devId",
+  isAuthenticated,
+  offerController.getOffersAppliedByDev
+);
 
 module.exports = router;
