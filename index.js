@@ -11,6 +11,8 @@ const devRouter = require("./routes/devRouter");
 const experienceRouter = require("./routes/experienceRouter");
 const studyRouter = require("./routes/studyRouter");
 const messageRouter = require('./routes/messageRouter');
+const settingsRouter = require("./routes/settingsRouter");
+const uploadRouter = require('./routes/uploadRouter');
 //Configuraciones del servidor 
 const { app,server }= require("./utils/socket"); // Importa la instancia de Express desde socket.js
 const port = process.env.PORT;
@@ -20,10 +22,12 @@ const cors = require('cors');
 //   console.log(`Server running on port ${port}`);
 // });
 
-const settingsRouter = require("./routes/settingsRouter");
-const uploadRouter = require('./routes/uploadRouter');
 
-app.use(cors());
+
+app.use(cors({
+    origin: [process.env.SOCKET_URL],
+    methods: ["GET", "POST"],
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: '10mb' }));
