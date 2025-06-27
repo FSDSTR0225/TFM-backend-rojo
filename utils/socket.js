@@ -8,6 +8,7 @@ const server = http.createServer(app);
 
 app.use(cors({
     origin: [process.env.SOCKET_URL],
+    methods: ["GET", "POST"],
     credentials: true
 }));
 
