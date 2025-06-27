@@ -10,23 +10,32 @@ const recruiterRouter = require("./routes/recruiterRouter");
 const devRouter = require("./routes/devRouter");
 const experienceRouter = require("./routes/experienceRouter");
 const studyRouter = require("./routes/studyRouter");
+const messageRouter = require('./routes/messageRouter');
+//Configuraciones del servidor 
+const { app,server }= require("./utils/socket"); // Importa la instancia de Express desde socket.js
+const port = process.env.PORT;
+const bodyParser = require('body-parser');
+const cors = require('cors');
+// const server = app.listen(port, () => {
+//   console.log(`Server running on port ${port}`);
+// });
+
 const settingsRouter = require("./routes/settingsRouter");
 const uploadRouter = require('./routes/uploadRouter');
-
-//Configuraciones
-const app = express();
-const port = process.env.PORT;
-const cors = require("cors");
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();
 });
 
+
+// Conexión a MongoDB Atlas
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
@@ -43,11 +52,12 @@ app.use("/recruiters", recruiterRouter);
 app.use("/devs", devRouter);
 app.use("/experiences", experienceRouter);
 app.use("/studies", studyRouter);
+app.use("/messages",messageRouter);
 app.use("/settings", settingsRouter);
 
 //upload images
 app.use('/', uploadRouter);
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`🚀 Servidor iniciado en http://localhost:${port}`);
 });

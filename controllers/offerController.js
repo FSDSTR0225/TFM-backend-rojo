@@ -393,10 +393,15 @@ module.exports = {
         return res.status(404).json({ msg: "Offer not found" });
       }
       console.log("Offer found:", offer.applicants);
+
+      const filteredApplicants = offer.applicants.filter(
+        (applicant) => applicant.user !== null
+      );
+
       return res.status(200).json({
         nameOffer: offer.position,
         skills: offer.skills,
-        applicants: offer.applicants,
+        applicants: filteredApplicants,
       });
     } catch (error) {
       console.error("Error fetching candidates:", error);
@@ -612,7 +617,7 @@ module.exports = {
         .fontSize(12)
         .text(
           applicant.coverLetter ||
-            "El candidato no proporcionó carta de presentación"
+          "El candidato no proporcionó carta de presentación"
         );
       doc.moveDown(2);
 
