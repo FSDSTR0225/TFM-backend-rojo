@@ -7,10 +7,20 @@ const server = http.createServer(app);
 
 
 
+// Configurar orígenes permitidos para Socket.io
+const CLIENT_URL = process.env.SOCKET_URL;
+const allowedOrigins = [
+    CLIENT_URL,
+    "http://localhost:3000", // React development
+    "http://localhost:5173", // Vite development
+    "http://localhost:4173", // Vite preview
+].filter(Boolean);
+
 const io = new Server(server,{
     cors: {
-        origin: [process.env.SOCKET_URL],
-        methods: ["GET", "POST"]
+        origin: allowedOrigins,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        credentials: true
     }
 })
 

@@ -22,13 +22,41 @@ const cors = require('cors');
 //   console.log(`Server running on port ${port}`);
 // });
 
+// Configurar URLs permitidas para CORS (Netlify + desarrollo local)
 const CLIENT_URL = process.env.SOCKET_URL;
+const allowedOrigins = [
+    CLIENT_URL,
+    "http://localhost:3000", // React development
+    "http://localhost:5173", // Vite development
+    "http://localhost:4173", // Vite preview
+].filter(Boolean); // Filtra valores undefined/null
 
+// Configuración CORS para Netlify y Render
 app.use(cors({
-    origin: CLIENT_URL,
-    methods: ["GET", "POST"],
+    origin: function (origin, callback) {
+        // Permite requests sin origin (aplicaciones móviles, Postman, etc.)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            console.log('🚫 Origen bloqueado por CORS:', origin);
+            console.log('✅ Orígenes permitidos:', allowedOrigins);
+            callback(new Error('No permitido por CORS'));
+        }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: [
+        "Content-Type", 
+        "Authorization", 
+        "x-access-token",
+        "Access-Control-Allow-Origin",
+        "Access-Control-Allow-Headers"
+    ],
     credentials: true,
+    optionsSuccessStatus: 200
 }));
+
 
 
 app.use(express.json());
