@@ -7,13 +7,14 @@ const server = http.createServer(app);
 
 
 
-// Configurar orígenes permitidos para Socket.io
-const CLIENT_URL = process.env.SOCKET_URL;
+// Configurar orígenes permitidos para Socket.io - Incluir específicamente Netlify
 const allowedOrigins = [
-    CLIENT_URL,
+    "https://codepply.netlify.app", // Frontend en Netlify (PRODUCCIÓN)
+    process.env.SOCKET_URL, // Variable de entorno
     "http://localhost:3000", // React development
     "http://localhost:5173", // Vite development
     "http://localhost:4173", // Vite preview
+    "http://127.0.0.1:5173", // Vite alternativo
 ].filter(Boolean);
 
 const io = new Server(server,{
