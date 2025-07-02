@@ -10,4 +10,6 @@ router.get("/", devController.getDevs);
 router.get("/:id", devController.getDevById);
 router.put("/profile", isAuthenticated, devController.updateDevProfile);
 
+router.put("/onboarding", isAuthenticated, devController.onboardingdev);
+
 module.exports = router;
