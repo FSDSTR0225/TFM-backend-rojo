@@ -385,7 +385,7 @@ module.exports = {
       const offer = await Offer.findById(offerId)
         .populate(
           "applicants.user",
-          "name email surname avatar appliedDate role.developer.skills"
+          "name email surname avatar appliedDate role.developer.skills role.developer.location role.developer.professionalPosition role.developer.resume"
         ) // Popular los datos del usuario que ha aplicado a la oferta
         .populate("owner", "name surname role.type role.recruiter.logo avatar"); // Popular los datos del propietario de la oferta
 
@@ -466,7 +466,7 @@ module.exports = {
       // 7) Re-popular datos del candidato actualizado
       await offer.populate(
         "applicants.user",
-        "name surname email avatar developer"
+        "name surname email avatar developer role.developer.location role.developer.skills role.developer.professionalPosition role.developer.resume "
       );
 
       const updatedCandidate = offer.applicants[candidateIndex];
