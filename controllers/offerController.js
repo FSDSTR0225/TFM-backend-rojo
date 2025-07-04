@@ -595,7 +595,8 @@ module.exports = {
 
       //crate PDF
       const doc = new PDFDocument();
-      const filename = `cover-letter-${applicant.user.name}-${offerId}.pdf`;
+     const safeName = applicant.user.name.replace(/[^a-zA-Z0-9 ]/g, "").replace(/ /g, "_");
+      const filename = `cover-letter-${safeName}-${offerId}.pdf`;
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader(
         "Content-Disposition",
