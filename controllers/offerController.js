@@ -468,7 +468,7 @@ module.exports = {
       // 7) Re-popular datos del candidato actualizado
       await offer.populate(
         "applicants.user",
-        "name surname email avatar developer role.developer.location role.developer.skills role.developer.professionalPosition role.developer.resume "
+        "name surname email avatar developer role.developer.location role.developer.skills role.developer.professionalPosition role.developer.resume"
       );
 
       const updatedCandidate = offer.applicants[candidateIndex];
