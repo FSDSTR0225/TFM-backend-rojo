@@ -31,7 +31,6 @@ function getReceiverSocketId(userId) {
 
 const userSocketMap = {};
 io.on("connection", (socket) => {
-    console.log("Nuevo usuario conectado");
 
     const userId = socket.handshake.query.userId;
     if (userId) userSocketMap[userId] = socket.id;
@@ -39,12 +38,13 @@ io.on("connection", (socket) => {
     //emit
     io.emit('getOnlineUsers', Object.keys(userSocketMap));
 
-    socket.on("sendNotification", ({ senderName, receiverId, receiverName, type }) => {
+    socket.on("sendNotification", ({ senderId, senderName, receiverId, receiverName, type }) => {
         const receiverSocketId = getReceiverSocketId(receiverId);
-        console.log("Notificación enviada a:", receiverSocketId);
         if (receiverSocketId) {
             io.to(receiverSocketId).emit("getNotification", {
+                senderId,       
                 senderName,
+                receiverId,      
                 receiverName,
                 type,
             });
