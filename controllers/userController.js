@@ -28,18 +28,20 @@ module.exports = {
       if (!bcrypt.compareSync(password, user.password)) {
         return res.status(404).json({ msg: "User does not exist" });
       }
-      const { password: _, ...rest } = user.toObject();
-      const token = generateToken(rest);
+      const { password: _, ...userWithoutPassword } = user.toObject();
+      const token = generateToken(userWithoutPassword);
+
       return res.status(200).json({
         msg: "User logged in successfully",
         token,
+        user: userWithoutPassword,
       });
     } catch (err) {
       return res.status(500).json(err);
     }
   },
 
-register: async (req, res) => {
+  register: async (req, res) => {
     try {
       const { name, surname, email, password, role } = req.body;
       console.log(req.body);
