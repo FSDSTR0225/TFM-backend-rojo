@@ -5,10 +5,23 @@ const http = require('http');
 const app = express();
 const server = http.createServer(app);
 
-const io = new Server(server, {
+
+
+// Configurar orígenes permitidos para Socket.io - Incluir específicamente Netlify
+const allowedOrigins = [
+    "https://codepply.netlify.app", // Frontend en Netlify (PRODUCCIÓN)
+    process.env.SOCKET_URL, // Variable de entorno
+    "http://localhost:3000", // React development
+    "http://localhost:5173", // Vite development
+    "http://localhost:4173", // Vite preview
+    "http://127.0.0.1:5173", // Vite alternativo
+].filter(Boolean);
+
+const io = new Server(server,{
     cors: {
-        origin: [process.env.SOCKET_URL],
-        methods: ["GET", "POST"]
+        origin: allowedOrigins,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        credentials: true
     }
 })
 
