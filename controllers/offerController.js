@@ -3,7 +3,7 @@ const Offer = require("../models/offerModel");
 const User = require("../models/userModel");
 const technologies = require("../tecnologias/programacion");
 const fs = require("fs");
-const pdfkit = require("pdfkit");
+const PDFDocument = require("pdfkit");
 const transporter = require("../controllers/emailController");
 const {
   ApplyEmail,
@@ -11,6 +11,8 @@ const {
   StatusRejectedEmail,
   CreateOfferEmail,
 } = require("../utils/emailTemplate");
+
+
 
 module.exports = {
   getOffers: async (req, res) => {
@@ -466,7 +468,7 @@ module.exports = {
       // 7) Re-popular datos del candidato actualizado
       await offer.populate(
         "applicants.user",
-        "name surname email avatar developer role.developer.location role.developer.skills role.developer.professionalPosition role.developer.resume "
+        "name surname email avatar developer role.developer.location role.developer.skills role.developer.professionalPosition role.developer.resume"
       );
 
       const updatedCandidate = offer.applicants[candidateIndex];
@@ -579,7 +581,7 @@ module.exports = {
     }
   },
 
-  generateCoverLetter: async (res, req) => {
+  generateCoverLetter: async (req, res) => {
     try {
       const { offerId, applicantId } = req.params;
       const offer = await Offer.findById(offerId)
@@ -593,7 +595,8 @@ module.exports = {
 
       //crate PDF
       const doc = new PDFDocument();
-      const filename = `cover-letter-${applicant.user.name}-${offerId}.pdf`;
+     const safeName = applicant.user.name.replace(/[^a-zA-Z0-9 ]/g, "").replace(/ /g, "_");
+      const filename = `cover-letter-${safeName}-${offerId}.pdf`;
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader(
         "Content-Disposition",

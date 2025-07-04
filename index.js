@@ -63,6 +63,9 @@ app.use(cors({
         "Access-Control-Allow-Headers",
         "Access-Control-Allow-Credentials"
     ],
+    exposedHeaders: [
+        "Content-Disposition"
+    ],
     credentials: true,
     optionsSuccessStatus: 200,
     preflightContinue: false
