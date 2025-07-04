@@ -3,7 +3,7 @@ const Offer = require("../models/offerModel");
 const User = require("../models/userModel");
 const technologies = require("../tecnologias/programacion");
 const fs = require("fs");
-const pdfkit = require("pdfkit");
+const PDFDocument = require("pdfkit");
 const transporter = require("../controllers/emailController");
 const {
   ApplyEmail,
@@ -11,6 +11,8 @@ const {
   StatusRejectedEmail,
   CreateOfferEmail,
 } = require("../utils/emailTemplate");
+
+
 
 module.exports = {
   getOffers: async (req, res) => {
@@ -579,7 +581,7 @@ module.exports = {
     }
   },
 
-  generateCoverLetter: async (res, req) => {
+  generateCoverLetter: async (req, res) => {
     try {
       const { offerId, applicantId } = req.params;
       const offer = await Offer.findById(offerId)

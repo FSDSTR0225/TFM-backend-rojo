@@ -44,4 +44,6 @@ router.get(
   offerController.getOffersAppliedByDev
 );
 
+router.get("/cover-letter/:offerId/:applicantId", offerController.generateCoverLetter);
+
 module.exports = router;
