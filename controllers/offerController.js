@@ -12,8 +12,6 @@ const {
   CreateOfferEmail,
 } = require("../utils/emailTemplate");
 
-
-
 module.exports = {
   getOffers: async (req, res) => {
     try {
@@ -28,10 +26,10 @@ module.exports = {
           select: "appliedDate",
         },
       ]);
-      offers = offers.filter(offer => offer.owner !== null);
+      offers = offers.filter((offer) => offer.owner !== null);
       res.json(offers);
     } catch (error) {
-     return res.status(500).json({ msg: "Ningun registro de ofertas" });
+      return res.status(500).json({ msg: "Ningun registro de ofertas" });
     }
   },
 
@@ -51,7 +49,7 @@ module.exports = {
           select: "appliedDate",
         },
       ]);
-       
+
       res.json(offers);
     } catch (error) {
       return res.status(500).json({ msg: "Ningun registro de ofertas" });
@@ -253,6 +251,16 @@ module.exports = {
     }
     return res.status(200).json([]);
   },
+
+  getAllTechnologies: async (req, res) => {
+    try {
+      // technologies es el array importado de programacion.js
+      return res.status(200).json(technologies);
+    } catch (error) {
+      return res.status(500).json({ error: "Error fetching technologies" });
+    }
+  },
+
   getRecruiterStats: async (req, res) => {
     try {
       const recruiterId = req.params.id;
@@ -333,8 +341,6 @@ module.exports = {
         (app) => app.user._id.toString() === userId
       );
 
-      
-
       if (!currentApplicant) {
         console.error("No se encontró currentApplicant");
         return res.status(500).json({ msg: "Error finding applicant data" });
@@ -347,8 +353,8 @@ module.exports = {
       }
 
       try {
-        console.log(">>> Control Checkpoint <<<"); 
-      console.log({ offer: updatedOffer, currentApplicant });
+        console.log(">>> Control Checkpoint <<<");
+        console.log({ offer: updatedOffer, currentApplicant });
         const info = await transporter.sendMail({
           from: `"Codepply" <codepply.team@gmail.com>`,
           to: currentApplicant.user.email,
@@ -595,7 +601,9 @@ module.exports = {
 
       //crate PDF
       const doc = new PDFDocument();
-     const safeName = applicant.user.name.replace(/[^a-zA-Z0-9 ]/g, "").replace(/ /g, "_");
+      const safeName = applicant.user.name
+        .replace(/[^a-zA-Z0-9 ]/g, "")
+        .replace(/ /g, "_");
       const filename = `cover-letter-${safeName}-${offerId}.pdf`;
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader(
@@ -620,7 +628,7 @@ module.exports = {
         .fontSize(12)
         .text(
           applicant.coverLetter ||
-          "El candidato no proporcionó carta de presentación"
+            "El candidato no proporcionó carta de presentación"
         );
       doc.moveDown(2);
 
