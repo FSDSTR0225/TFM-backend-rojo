@@ -10,6 +10,8 @@ router.get("/", offerController.getOffers);
 
 router.get("/technology", offerController.getTechnology);
 
+router.get("/allskills", offerController.getAllTechnologies);
+
 router.get("/bydev", isAuthenticated, offerController.getOffersByDev);
 
 router.get("/:id", offerController.getOfferById);
@@ -44,6 +46,9 @@ router.get(
   offerController.getOffersAppliedByDev
 );
 
-router.get("/cover-letter/:offerId/:applicantId", offerController.generateCoverLetter);
+router.get(
+  "/cover-letter/:offerId/:applicantId",
+  offerController.generateCoverLetter
+);
 
 module.exports = router;
