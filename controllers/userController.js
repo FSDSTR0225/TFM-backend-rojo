@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 const User = require("../models/userModel");
 const generateToken = require("../utils/generateToken");
 const transporter = require("../controllers/emailController");
@@ -114,6 +115,68 @@ module.exports = {
       res.status(200).json(user);
     } catch (error) {
       res.status(500).json(error.message);
+    }
+  },
+
+  forgotPasswordEmail: async (req, res) => {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+  
+    if (!user) return res.status(404).json({ message: "User not found" });
+  
+    const token = crypto.randomBytes(32).toString("hex");
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hora
+    await user.save();
+  
+    const resetUrl = `${process.env.SOCKET_URL}/reset-password/${token}`;
+  
+    try {
+      await transporter.sendMail({
+        from: `"Codepply" <codepply.team@gmail.com>`,
+        to: user.email,
+        subject: "Recover Codepply password",
+        html: `
+          <p>Click the following link to reset your Codepply password:</p>
+          <a href="${resetUrl}">Change your Codepply password</a>
+          <p>This link will expire in 1 hour.</p>
+        `,
+      });
+  
+      res.status(200).json({ message: "Recovery email sent" });
+    } catch (error) {
+      console.error("Error sending email:", error);
+      res.status(500).json({ message: "Error sending email" });
+    }
+  },
+
+  resetPassword: async (req, res) => {
+    try {
+      const { token } = req.params;
+      const { password } = req.body;
+
+      const user = await User.findOne({
+        resetPasswordToken: token,
+        resetPasswordExpires: { $gt: Date.now() },
+      });
+
+      if (!user) {
+        return res.status(400).json({ msg: "Invalid or Expired Token" });
+      }
+
+      // Hashear nueva contraseña
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      // Guardar
+      user.password = hashedPassword;
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpires = undefined;
+      await user.save();
+
+      res.status(200).json({ msg: "Password updated successfully" });
+    } catch (error) {
+      console.error("Error in resetPassword:", error);
+      res.status(500).json({ msg: "Server Error" });
     }
   },
 };
