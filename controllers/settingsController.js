@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/userModel");
 const generateToken = require("../utils/generateToken");
 const transporter = require("../controllers/emailController");
-const { UpdatePasswordEmail } = require("../utils/emailTemplate");
+const { UpdatePasswordEmail, DeleteAccount } = require("../utils/emailTemplate");
 
 module.exports = {
 
@@ -85,6 +85,45 @@ module.exports = {
       console.error('Error updating dev password:', error);
       res.status(500).json({ msg: error.message });
     }
-  }
+  },
+
+  deleteUser: async (req, res) => {
+      try {
+        const userId = req.user.id;
+
+        // Buscar el usuario
+        const user = await User.findById(userId);
+        if (!user) {
+          return res.status(404).json({ msg: 'User not found' });
+        }
+
+        // Eliminar el usuario
+        await User.findByIdAndDelete(userId);
+
+        // Opcional: Enviar email de confirmación de eliminación
+        try {
+          await transporter.sendMail({
+            from: `"Codepply" <codepply.team@gmail.com>`,
+            to: user.email,
+            subject: "Account deleted successfully",
+            text: `Your account has been permanently deleted.`,
+            html: DeleteAccount(user.name, user.email),
+          });
+          console.log("Deletion confirmation email sent");
+        } catch (mailError) {
+          console.error("Error sending deletion confirmation email:", mailError);
+          // No retornamos error aquí porque la eliminación ya se completó
+        }
+
+        res.status(200).json({ 
+          msg: 'User account deleted successfully' 
+        });
+        
+      } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).json({ msg: error.message });
+      }
+    }
 
 };
+
