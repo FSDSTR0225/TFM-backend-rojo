@@ -129,7 +129,7 @@ module.exports = {
     user.resetPasswordExpires = Date.now() + 3600000; // 1 hora
     await user.save();
   
-    const resetUrl = `${process.env.SOCKET_URL}/reset-password/${token}`;
+    const resetUrl = `${process.env.SOCKET_URL}reset-password/${token}`;
   
     try {
       await transporter.sendMail({
