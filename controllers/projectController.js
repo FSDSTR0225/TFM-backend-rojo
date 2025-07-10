@@ -6,7 +6,7 @@ module.exports = {
     try {
       const projects = await Project.find({
         isDeleted: { $ne: true },
-      }).populate("owner", "name surname avatar");
+      }).populate("owner", "name surname avatar role");
 
       res.json(projects);
     } catch (error) {
@@ -19,7 +19,7 @@ module.exports = {
       const userId = req.user ? req.user.id : null; // el id del usuario logueado, o null si no hay
       const project = await Project.findById(req.params.id).populate(
         "owner",
-        "name surname avatar"
+        "name surname avatar role"
       );
 
       if (!project) return res.status(404).json({ msg: "Project not found" });
@@ -228,7 +228,7 @@ module.exports = {
           { professionalRole: regex },
           { projectSkills: regex },
         ],
-      }).populate("owner", "name surname avatar");
+      }).populate("owner", "name surname avatar role");
 
       res.json(projects);
     } catch (error) {
