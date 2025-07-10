@@ -12,8 +12,6 @@ const {
   CreateOfferEmail,
 } = require("../utils/emailTemplate");
 
-
-
 module.exports = {
   getOffers: async (req, res) => {
     try {
@@ -28,10 +26,10 @@ module.exports = {
           select: "appliedDate",
         },
       ]);
-      offers = offers.filter(offer => offer.owner !== null);
+      offers = offers.filter((offer) => offer.owner !== null);
       res.json(offers);
     } catch (error) {
-     return res.status(500).json({ msg: "Ningun registro de ofertas" });
+      return res.status(500).json({ msg: "Ningun registro de ofertas" });
     }
   },
 
@@ -51,7 +49,7 @@ module.exports = {
           select: "appliedDate",
         },
       ]);
-       
+
       res.json(offers);
     } catch (error) {
       return res.status(500).json({ msg: "Ningun registro de ofertas" });
@@ -253,6 +251,16 @@ module.exports = {
     }
     return res.status(200).json([]);
   },
+
+  getAllTechnologies: async (req, res) => {
+    try {
+      // technologies es el array importado de programacion.js
+      return res.status(200).json(technologies);
+    } catch (error) {
+      return res.status(500).json({ error: "Error fetching technologies" });
+    }
+  },
+
   getRecruiterStats: async (req, res) => {
     try {
       const recruiterId = req.params.id;
@@ -296,59 +304,91 @@ module.exports = {
   },
   applyToOffer: async (req, res) => {
     try {
+      console.log("=== INICIO applyToOffer ===");
+      console.log("Request params:", req.params);
+      console.log("Request body:", req.body);
+      console.log("User info:", req.user);
+      
       const offerId = req.params.id;
       const userId = req.user.id;
       const userRole = req.user.role;
       const { phone, coverLetter, gdprAccepted } = req.body;
 
+      console.log("Extracted data:", { offerId, userId, userRole, phone, gdprAccepted });
+
       if (userRole !== "developer") {
+        console.log("ERROR: User is not a developer");
         return res
           .status(403)
           .json({ msg: "Only developers can apply for offers." });
       }
+      
+      console.log("Searching for offer with ID:", offerId);
       const offer = await Offer.findById(offerId);
-      if (!offer) return res.status(404).json({ msg: "Offer not found" });
+      if (!offer) {
+        console.log("ERROR: Offer not found");
+        return res.status(404).json({ msg: "Offer not found" });
+      }
+      
+      console.log("Offer found:", offer.position, "at", offer.company);
 
       const alreadyApplied = offer.applicants.some(
         (app) => app.user.toString() === userId
       );
       if (alreadyApplied) {
+        console.log("ERROR: User already applied");
         return res
           .status(400)
           .json({ msg: "You have already applied for this offer" });
       }
+      
+      console.log("Adding applicant to offer...");
       offer.applicants.push({
         user: userId,
         phone,
         coverLetter,
         gdprAccepted,
       });
+      
+      console.log("Saving offer...");
       await offer.save();
+      console.log("Offer saved successfully");
 
+      console.log("Fetching updated offer with populated data...");
       const updatedOffer = await Offer.findById(offerId)
         .populate("owner")
-        .populate("applicants.user", "name email avatar"); // Opcional: popular datos del usuario
+        .populate("applicants.user", "name email avatar");
+      
+      console.log("Updated offer retrieved");
+      console.log("Number of applicants:", updatedOffer.applicants.length);
+      
+      // Filtrar aplicantes con usuarios válidos
+      const validApplicants = updatedOffer.applicants.filter(
+        (app) => app.user && app.user._id
+      );
+      
+      console.log("Valid applicants:", validApplicants.length);
+      console.log("Looking for userId:", userId);
 
-      const currentApplicant = updatedOffer.applicants.find(
+      const currentApplicant = validApplicants.find(
         (app) => app.user._id.toString() === userId
       );
 
-      
-
       if (!currentApplicant) {
-        console.error("No se encontró currentApplicant");
+        console.error("ERROR: No se encontró currentApplicant");
         return res.status(500).json({ msg: "Error finding applicant data" });
       }
+      
+      console.log("Current applicant found:", currentApplicant.user.name);
 
       // Verificar que el usuario tiene los datos necesarios
       if (!currentApplicant.user.email) {
-        console.error("Usuario sin email");
+        console.error("ERROR: Usuario sin email");
         return res.status(500).json({ msg: "User email not found" });
       }
 
+      console.log("Attempting to send email...");
       try {
-        console.log(">>> Control Checkpoint <<<"); 
-      console.log({ offer: updatedOffer, currentApplicant });
         const info = await transporter.sendMail({
           from: `"Codepply" <codepply.team@gmail.com>`,
           to: currentApplicant.user.email,
@@ -362,20 +402,20 @@ module.exports = {
             currentApplicant.user.email
           ),
         });
-        console.log("Email enviado:", info);
+        console.log("Email sent successfully:", info.messageId);
       } catch (mailError) {
-        console.error("Error enviando el correo:", mailError);
-        // opcional: podrías continuar sin cortar el registro, o cortar aquí si es crítico
-        return res
-          .status(500)
-          .json({ msg: "Error enviando correo de aplicar en oferta" });
+        console.error("Error sending email (continuing anyway):", mailError.message);
       }
 
+      console.log("Returning successful response...");
       return res.status(200).json({
         msg: "Application completed successfully",
         offer: updatedOffer,
       });
     } catch (error) {
+      console.error("=== ERROR in applyToOffer ===");
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
       return res
         .status(500)
         .json({ msg: "Error applying to the offer", error: error.message });
@@ -595,7 +635,9 @@ module.exports = {
 
       //crate PDF
       const doc = new PDFDocument();
-     const safeName = applicant.user.name.replace(/[^a-zA-Z0-9 ]/g, "").replace(/ /g, "_");
+      const safeName = applicant.user.name
+        .replace(/[^a-zA-Z0-9 ]/g, "")
+        .replace(/ /g, "_");
       const filename = `cover-letter-${safeName}-${offerId}.pdf`;
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader(
@@ -620,7 +662,7 @@ module.exports = {
         .fontSize(12)
         .text(
           applicant.coverLetter ||
-          "El candidato no proporcionó carta de presentación"
+            "El candidato no proporcionó carta de presentación"
         );
       doc.moveDown(2);
 

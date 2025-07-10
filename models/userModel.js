@@ -10,6 +10,8 @@ const userSchema = new mongoose.Schema(
     phone: { type: String },
     avatar: { type: String },
     description: { type: String },
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date },
     hasCompletedOnboarding: { type: Boolean, default: false },
     role: {
       type: { type: String, required: true, enum: ["developer", "recruiter"] },
