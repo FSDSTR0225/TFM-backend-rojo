@@ -5,6 +5,7 @@ const isAuthenticated = require('../middlewares/auth/isAutenticated');
 
 router.get('/', isAuthenticated, settingsController.getSettings);
 router.put('/change-password', isAuthenticated, settingsController.updatePassword);
-router.delete('/delete-account', isAuthenticated, settingsController.deleteUser);
+router.put('/delete-account/soft-delete', isAuthenticated, settingsController.softDeleteUser);
+router.put('/profile', isAuthenticated, settingsController.updateUserAccount);
 
 module.exports = router;
