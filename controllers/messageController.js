@@ -70,10 +70,30 @@ module.exports = {
             await newMessage.save();
 
             //RealTime Funcionality goes here => socket.io
+            const senderUser = await User.findById(senderId).select("-password");
+            const receiverUser = await User.findById(receiverId).select("-password");
 
             const receiverSocketId = getReceiverSocketId(receiverId);
             if(receiverSocketId){
-                io.to(receiverSocketId).emit("newMessage", newMessage);
+                io.to(receiverSocketId).emit("newMessage", {
+                    ...newMessage.toObject(),
+                    sender: senderUser,
+                });
+                io.to(receiverSocketId).emit("getNotification", {
+                    senderId: senderId,
+                    senderName: senderUser.name,
+                    receiverId: receiverId,
+                    receiverName: receiverUser.name,
+                    type: 1,
+                    user: {
+                        _id: senderUser._id,
+                        name: senderUser.name,
+                        role: senderUser.role,
+                        roles: senderUser.roles,
+                        avatar: senderUser.avatar,
+                        email: senderUser.email
+                    }
+            });
             } 
 
             res.status(201).json(newMessage);
