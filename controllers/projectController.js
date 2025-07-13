@@ -6,9 +6,16 @@ module.exports = {
     try {
       const projects = await Project.find({
         isDeleted: { $ne: true },
-      }).populate("owner", "name surname avatar role");
+      }).populate({
+        path: "owner",
+        select: "name surname avatar role",
+        match: { isDeleted: { $ne: true } }
+      });
 
-      res.json(projects);
+      // Filtrar proyectos cuyos owners no estén eliminados
+      const filteredProjects = projects.filter(project => project.owner);
+
+      res.json(filteredProjects);
     } catch (error) {
       res.status(500).json({ msg: error.message });
     }
@@ -17,12 +24,20 @@ module.exports = {
   getProjectById: async (req, res) => {
     try {
       const userId = req.user ? req.user.id : null; // el id del usuario logueado, o null si no hay
-      const project = await Project.findById(req.params.id).populate(
-        "owner",
-        "name surname avatar role"
-      );
+      const project = await Project.findById(req.params.id).populate({
+        path: "owner",
+        select: "name surname avatar role",
+        match: { isDeleted: { $ne: true } }
+      });
 
-      if (!project) return res.status(404).json({ msg: "Project not found" });
+      if (!project || project.isDeleted) {
+        return res.status(404).json({ msg: "Project not found" });
+      }
+
+      // Verificar si el owner está eliminado
+      if (!project.owner) {
+        return res.status(404).json({ msg: "Project not found" });
+      }
 
       // Comprobar si el usuario ha dado like
       let liked = false;
@@ -40,12 +55,27 @@ module.exports = {
   getProjectsByDeveloper: async (req, res) => {
     try {
       const developerId = req.params.developerId;
+      
+      // Primero verificar que el developer no esté eliminado
+      const User = require("../models/userModel");
+      const developer = await User.findById(developerId);
+      if (!developer || developer.isDeleted) {
+        return res.status(404).json({ msg: "Developer not found" });
+      }
+
       const projects = await Project.find({
         owner: developerId,
         isDeleted: { $ne: true },
-      }).populate("owner", "name surname avatar");
+      }).populate({
+        path: "owner",
+        select: "name surname avatar role",
+        match: { isDeleted: { $ne: true } }
+      });
 
-      res.status(200).json(projects);
+      // Filtrar proyectos cuyos owners no estén eliminados (por seguridad adicional)
+      const filteredProjects = projects.filter(project => project.owner);
+
+      res.status(200).json(filteredProjects);
     } catch (error) {
       res.status(500).json({ msg: error.message });
     }
@@ -71,7 +101,7 @@ module.exports = {
       const projectNewData = req.body;
 
       const project = await Project.findById(projectId);
-      if (!project) {
+      if (!project || project.isDeleted) {
         return res.status(404).json({ msg: "Project not found" });
       }
 
@@ -102,7 +132,7 @@ module.exports = {
 
       const project = await Project.findById(projectId);
 
-      if (!project) {
+      if (!project || project.isDeleted) {
         return res.status(404).json({ msg: "Project not found" });
       }
 
@@ -129,16 +159,27 @@ module.exports = {
   incrementView: async (req, res) => {
     try {
       const projectId = req.params.id;
+      
+      // Verificar que el proyecto existe y no está eliminado
+      const project = await Project.findById(projectId).populate({
+        path: "owner",
+        select: "_id",
+        match: { isDeleted: { $ne: true } }
+      });
+      
+      if (!project || project.isDeleted || !project.owner) {
+        return res.status(404).json({ msg: "Project not found" });
+      }
+      
       const updatedProject = await Project.findByIdAndUpdate(
         projectId,
         { $inc: { views: 1 } },
         { new: true }
       );
-      if (!updatedProject)
-        return res.status(404).json({ msg: "Project not found" });
+      
       res.json({ views: updatedProject.views });
     } catch (error) {
-      console.error("Error en incrementView:", error); // <-- aquí
+      console.error("Error en incrementView:", error);
       res.status(500).json({ msg: error.message });
     }
   },
@@ -148,9 +189,15 @@ module.exports = {
       const projectId = req.params.id;
       const userId = req.user.id;
 
-      const project = await Project.findById(projectId);
+      const project = await Project.findById(projectId).populate({
+        path: "owner",
+        select: "_id",
+        match: { isDeleted: { $ne: true } }
+      });
 
-      if (!project) return res.status(404).json({ msg: "Project not found" });
+      if (!project || project.isDeleted || !project.owner) {
+        return res.status(404).json({ msg: "Project not found" });
+      }
 
       const likedIndex = project.likedBy.findIndex(
         (id) => id.toString() === userId
@@ -173,13 +220,16 @@ module.exports = {
       res.status(500).json({ msg: error.message });
     }
   },
+
   softDeleteProject: async (req, res) => {
     try {
       const projectId = req.params.id;
       const userId = req.user.id;
 
       const project = await Project.findById(projectId);
-      if (!project) return res.status(404).json({ msg: "Project not found" });
+      if (!project || project.isDeleted) {
+        return res.status(404).json({ msg: "Project not found" });
+      }
       if (project.owner.toString() !== userId)
         return res.status(403).json({ msg: "Unauthorized" });
 
@@ -197,9 +247,15 @@ module.exports = {
       const projectId = req.params.id;
       const userId = req.user.id;
 
-      const project = await Project.findById(projectId);
+      const project = await Project.findById(projectId).populate({
+        path: "owner",
+        select: "_id",
+        match: { isDeleted: { $ne: true } }
+      });
 
-      if (!project) return res.status(404).json({ msg: "Project not found" });
+      if (!project || project.isDeleted || !project.owner) {
+        return res.status(404).json({ msg: "Project not found" });
+      }
 
       const liked = project.likedBy.some((id) => id.toString() === userId);
 
@@ -228,9 +284,16 @@ module.exports = {
           { professionalRole: regex },
           { projectSkills: regex },
         ],
-      }).populate("owner", "name surname avatar role");
+      }).populate({
+        path: "owner",
+        select: "name surname avatar role",
+        match: { isDeleted: { $ne: true } }
+      });
 
-      res.json(projects);
+      // Filtrar proyectos cuyos owners no estén eliminados
+      const filteredProjects = projects.filter(project => project.owner);
+
+      res.json(filteredProjects);
     } catch (error) {
       res.status(500).json({ msg: error.message });
     }

@@ -21,15 +21,15 @@ module.exports = {
       let email = req.body.email;
       let password = req.body.password;
 
-      let user = await User.findOne({ email: email });
+      let user = await User.findOne({ email: email,  isDeleted: { $ne: true } });
 
       if (!user) {
         return res.status(404).json({ msg: "User does not exist" });
       }
 
-      if (user.isDeleted) {
-        return res.status(403).json({ msg: "User account is deleted" });
-      }
+      // if (user.isDeleted) {
+      //   return res.status(403).json({ msg: "User account is deleted" });
+      // }
       
       if (!bcrypt.compareSync(password, user.password)) {
         return res.status(404).json({ msg: "User does not exist" });
