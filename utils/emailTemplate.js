@@ -112,7 +112,7 @@ function generateWelcomeEmail(name) {
         </p>
         <div class="button" style="margin-top: 35px; margin-bottom: 60px">
           <a
-            href="https://www.google.com"
+            href="https://codepply.netlify.app/login"
             class="loginbutton"
             style="
               color: #ffffff;
@@ -334,7 +334,7 @@ function ApplyEmail(position, company, name, avatar, email) {
         </p>
         <div class="button" style="margin-top: 30px; margin-bottom: 30px">
           <a
-            href="https://www.google.com"
+            href="https://codepply.netlify.app/login"
             class="loginbutton"
             style="
               color: #ffffff;
@@ -741,7 +741,7 @@ function StatusReviewedEmail(position, company, name, avatar, email) {
         </p>
         <div class="button" style="margin-top: 10px; margin-bottom: 15px">
           <a
-            href="https://www.google.com"
+            href="https://codepply.netlify.app/login"
             class="loginbutton"
             style="
               color: #ffffff;
@@ -947,7 +947,7 @@ function CreateOfferEmail(position, company, name, avatar, email) {
                 Check candidates profile and offer details:
               </p>
               <a
-                href="https://www.google.com"
+                href="https://codepply.netlify.app/login"
                 style="
                   color: #ffffff;
                   padding: 8px 14px;
@@ -1116,7 +1116,7 @@ function UpdatePasswordEmail(avatar, email) {
         </p>
         <div class="button" style="margin-top: 35px; margin-bottom: 60px">
           <a
-            href="https://www.google.com"
+            href="https://codepply.netlify.app/login"
             class="loginbutton"
             style="
               color: #ffffff;
