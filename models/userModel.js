@@ -13,6 +13,8 @@ const userSchema = new mongoose.Schema(
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date },
     hasCompletedOnboarding: { type: Boolean, default: false },
+    isDeleted: { type: Boolean, default: false },
+    deletedAt: { type: Date, default: null },
     role: {
       type: { type: String, required: true, enum: ["developer", "recruiter"] },
       developer: {

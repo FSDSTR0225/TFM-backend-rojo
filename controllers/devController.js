@@ -4,7 +4,10 @@ const User = require("../models/userModel"); // Asegúrate de que la ruta sea co
 module.exports = {
   getDevs: async (req, res) => {
     try {
-      const devs = await User.find({ "role.type": "developer" });
+      const devs = await User.find({ 
+        "role.type": "developer",
+        isDeleted: { $ne: true }
+      });
       res.json(devs);
     } catch (error) {
       res.status(500).json({ msg: error.message });
@@ -14,7 +17,10 @@ module.exports = {
   //Este código nos muestra el perfil de cada dev
   getDevById: async (req, res) => {
     try {
-      const dev = await User.findById(req.params.id);
+      const dev = await User.findOne({
+        _id: req.params.id,
+        isDeleted: { $ne: true }
+      });
       return res.json(dev);
     } catch (error) {
       return res.status(500).json({ msg: error.message });
@@ -142,6 +148,7 @@ module.exports = {
 
       const developers = await User.find({
         "role.type": "developer",
+        isDeleted: { $ne: true },
         $or: [
           { name: regex },
           { surname: regex },
