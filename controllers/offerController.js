@@ -20,10 +20,12 @@ module.exports = {
         {
           path: "owner",
           select: "_id name surname role.type role.recruiter.logo avatar",
+          match: { isDeleted: { $ne: true } }
         },
         {
           path: "applicants.user",
           select: "appliedDate",
+          match: { isDeleted: { $ne: true } }
         },
       ]);
       offers = offers.filter((offer) => offer.owner !== null);
@@ -43,10 +45,12 @@ module.exports = {
         {
           path: "owner",
           select: "_id name surname role.type role.recruiter.logo avatar",
+          match: { isDeleted: { $ne: true } }
         },
         {
           path: "applicants",
           select: "appliedDate",
+          match: { isDeleted: { $ne: true } }
         },
       ]);
 
@@ -66,8 +70,9 @@ module.exports = {
         path: "owner",
         select:
           "_id name surname avatar role.type role.recruiter.logo role.recruiter.companyName role.recruiter.website role.recruiter.contact",
+        match: { isDeleted: { $ne: true } }
       });
-      if (!offer) {
+      if (!offer || !offer.owner) {
         return res.status(404).json({ msg: "Offer not found" });
       }
       return res.json(offer);
@@ -425,11 +430,16 @@ module.exports = {
     try {
       const offerId = req.params.id;
       const offer = await Offer.findById(offerId)
-        .populate(
-          "applicants.user",
-          "name email surname avatar appliedDate role.developer.skills role.developer.location role.developer.professionalPosition role.developer.resume"
-        ) // Popular los datos del usuario que ha aplicado a la oferta
-        .populate("owner", "name surname role.type role.recruiter.logo avatar"); // Popular los datos del propietario de la oferta
+        .populate({
+          path: "applicants.user",
+          select: "name email surname avatar appliedDate role.developer.skills role.developer.location role.developer.professionalPosition role.developer.resume",
+          match: { isDeleted: { $ne: true } }
+        })
+        .populate({
+          path: "owner",
+          select: "name surname role.type role.recruiter.logo avatar",
+          match: { isDeleted: { $ne: true } }
+        });
 
       if (!offer) {
         return res.status(404).json({ msg: "Offer not found" });
@@ -506,16 +516,17 @@ module.exports = {
       await offer.save();
 
       // 7) Re-popular datos del candidato actualizado
-      await offer.populate(
-        "applicants.user",
-        "name surname email avatar developer role.developer.location role.developer.skills role.developer.professionalPosition role.developer.resume"
-      );
+      await offer.populate({
+        path: "applicants.user",
+        select: "name surname email avatar developer role.developer.location role.developer.skills role.developer.professionalPosition role.developer.resume",
+        match: { isDeleted: { $ne: true } }
+      });
 
       const updatedCandidate = offer.applicants[candidateIndex];
 
       if (!updatedCandidate || !updatedCandidate.user) {
-        console.error("User not found");
-        return res.status(500).json("User not found");
+        console.error("User not found or is deleted");
+        return res.status(500).json("User not found or is deleted");
       }
 
       if (!updatedCandidate.user.email) {
@@ -583,10 +594,19 @@ module.exports = {
         {
           path: "owner",
           select: "_id name surname role.type role.recruiter.logo avatar",
+          match: { isDeleted: { $ne: true } }
         },
-        { path: "applicants.user", select: "name email" },
+        { 
+          path: "applicants.user", 
+          select: "name email",
+          match: { isDeleted: { $ne: true } }
+        },
       ]);
-      res.status(200).json({ offers });
+      
+      // Filtrar ofertas que tengan owner válido
+      const validOffers = offers.filter(offer => offer.owner !== null);
+      
+      res.status(200).json({ offers: validOffers });
     } catch (error) {
       res.status(500).json({ msg: error.message });
     }
@@ -612,10 +632,19 @@ module.exports = {
         {
           path: "owner",
           select: "_id name surname role.type role.recruiter.logo avatar",
+          match: { isDeleted: { $ne: true } }
         },
-        { path: "applicants.user", select: "name email" },
+        { 
+          path: "applicants.user", 
+          select: "name email",
+          match: { isDeleted: { $ne: true } }
+        },
       ]);
-      res.status(200).json({ offers });
+      
+      // Filtrar ofertas que tengan owner válido
+      const validOffers = offers.filter(offer => offer.owner !== null);
+      
+      res.status(200).json({ offers: validOffers });
     } catch (error) {
       res.status(500).json({ msg: error.message });
     }
@@ -734,9 +763,16 @@ module.exports = {
           { description: regex },
           { language: regex },
         ],
-      }).populate("owner", "name surname avatar");
+      }).populate({
+        path: "owner",
+        select: "name surname avatar",
+        match: { isDeleted: { $ne: true } }
+      });
 
-      res.json(offers);
+      // Filtrar ofertas que tengan owner válido
+      const validOffers = offers.filter(offer => offer.owner !== null);
+
+      res.json(validOffers);
     } catch (error) {
       res.status(500).json({ msg: error.message });
     }
