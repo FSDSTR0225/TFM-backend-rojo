@@ -1323,6 +1323,225 @@ function DeleteAccount(name, email) {
 `;
 }
 
+function generateContactEmail(name, email, category, subject, message) {
+  // Mapear categorías a etiquetas más legibles
+  const categoryLabels = {
+    'bug': 'Bug Report',
+    'feature': 'Feature Request',
+    'improvement': 'Improvement Suggestion',
+    'support': 'Technical Support',
+    'feedback': 'General Feedback',
+    'business': 'Business Inquiry',
+    'other': 'Other'
+  };
+  
+  const categoryLabel = categoryLabels[category] || category;
+  
+  return `
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Contact Form Submission - Codepply</title>
+    <style>
+      /* Resetear estilos */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        background-color: #f4f6f8;
+        color: #000000;
+        line-height: 1.6;
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+      }
+      
+      .wrapper {
+        max-width: 600px;
+        margin: 20px auto;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+      }
+      
+      .header {
+        background-color: #000000;
+        padding: 30px 20px;
+        text-align: center;
+      }
+      
+      .logo {
+        max-width: 200px;
+        height: auto;
+        display: inline-block;
+      }
+      
+      .content {
+        padding: 30px 20px;
+        background-color: #171717;
+      }
+      
+      .title {
+        font-size: 24px;
+        color: #37c848;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      
+      .info-box {
+        background-color: #262626;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid #37c848;
+      }
+      
+      .message-box {
+        background-color: #262626;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid #60aaff;
+      }
+      
+      .info-title {
+        color: #37c848;
+        margin-bottom: 15px;
+        font-size: 18px;
+        font-weight: 600;
+      }
+      
+      .message-title {
+        color: #60aaff;
+        margin-bottom: 15px;
+        font-size: 18px;
+        font-weight: 600;
+      }
+      
+      .info-item {
+        color: #ffffff;
+        margin: 8px 0;
+        font-size: 14px;
+      }
+      
+      .info-label {
+        font-weight: 600;
+        color: #cccccc;
+      }
+      
+      .message-text {
+        color: #ffffff;
+        line-height: 1.6;
+        font-size: 14px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+      
+      .button-container {
+        text-align: center;
+        margin-top: 30px;
+      }
+      
+      .reply-button {
+        background-color: #37c848;
+        color: #ffffff;
+        padding: 12px 24px;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-block;
+        font-weight: 600;
+        font-size: 14px;
+      }
+      
+      .footer {
+        background-color: #cccccc;
+        padding: 20px;
+        text-align: center;
+        font-size: 12px;
+        color: #595959;
+      }
+      
+      .footer p {
+        margin: 5px 0;
+      }
+      
+      /* Estilos específicos para clientes de email */
+      @media only screen and (max-width: 600px) {
+        .wrapper {
+          margin: 10px;
+          border-radius: 5px;
+        }
+        
+        .content {
+          padding: 20px 15px;
+        }
+        
+        .title {
+          font-size: 20px;
+        }
+        
+        .info-box, .message-box {
+          padding: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <!-- HEADER -->
+      <div class="header">
+        <img
+          src="https://res.cloudinary.com/djxyqh8fx/image/upload/v1750516676/Logo_gradient_y_white_sjozix.png"
+          alt="Codepply Logo"
+          class="logo"
+        />
+      </div>
+
+      <!-- CONTENT -->
+      <div class="content">
+        <h1 class="title">New Contact Form Submission</h1>
+        
+        <div class="info-box">
+          <h3 class="info-title">Contact Details</h3>
+          <div class="info-item"><span class="info-label">Name:</span> ${name}</div>
+          <div class="info-item"><span class="info-label">Email:</span> ${email}</div>
+          <div class="info-item"><span class="info-label">Category:</span> ${categoryLabel}</div>
+          <div class="info-item"><span class="info-label">Subject:</span> ${subject}</div>
+          <div class="info-item"><span class="info-label">Date:</span> ${new Date().toLocaleString()}</div>
+        </div>
+
+        <div class="message-box">
+          <h3 class="message-title">Message</h3>
+          <div class="message-text">${message}</div>
+        </div>
+
+        <div class="button-container">
+          <a href="mailto:${email}?subject=Re: ${subject}" class="reply-button">
+            Reply to ${name}
+          </a>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="footer">
+        <p>This message was sent from the Codepply contact form.</p>
+        <p>Received on ${new Date().toLocaleString()}</p>
+        <p>© ${new Date().getFullYear()} Codepply. All rights reserved.</p>
+      </div>
+    </div>
+  </body>
+</html>
+`;
+}
+
 module.exports = {
   generateWelcomeEmail,
   ApplyEmail,
@@ -1330,6 +1549,7 @@ module.exports = {
   StatusRejectedEmail,
   CreateOfferEmail,
   UpdatePasswordEmail,
-  DeleteAccount
+  DeleteAccount,
+  generateContactEmail
 };
 
