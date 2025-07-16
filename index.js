@@ -13,6 +13,8 @@ const studyRouter = require("./routes/studyRouter");
 const messageRouter = require('./routes/messageRouter');
 const settingsRouter = require("./routes/settingsRouter");
 const uploadRouter = require('./routes/uploadRouter');
+const contactRouter = require('./routes/contactRouter');
+const testContactRouter = require('./routes/testContactRouter');
 //Configuraciones del servidor 
 const { app,server }= require("./utils/socket"); // Importa la instancia de Express desde socket.js
 const port = process.env.PORT;
@@ -101,6 +103,8 @@ app.use("/experiences", experienceRouter);
 app.use("/studies", studyRouter);
 app.use("/messages",messageRouter);
 app.use("/settings", settingsRouter);
+app.use("/contact", contactRouter);
+app.use("/test-contact", testContactRouter);
 
 //upload images
 app.use('/', uploadRouter);
