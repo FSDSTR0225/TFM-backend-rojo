@@ -184,4 +184,54 @@ module.exports = {
       res.status(500).json({ msg: "Server Error" });
     }
   },
+n8nFullDataUsers: async (req, res) => {
+  try {
+    const users = await User.aggregate([
+      {
+        $match: {
+          "role.type": "developer",
+          hasCompletedOnboarding: true,
+          isDelete: false
+        }
+      },
+      {
+        $lookup: {
+          from: "experiences",
+          localField: "experiences",
+          foreignField: "_id",
+          as: "experiences"
+        }
+      },
+      {
+        $lookup: {
+          from: "projects",
+          localField: "projects",
+          foreignField: "_id",
+          as: "projects"
+        }
+      },
+      {
+        $lookup: {
+          from: "studies",
+          localField: "studies",
+          foreignField: "_id",
+          as: "studies"
+        }
+      },
+      {
+        $project: {
+          password: 0,
+          resetPasswordToken: 0,
+          resetPasswordExpires: 0,
+          __v: 0
+        }
+      }
+    ]);
+
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error in n8nFullDataUsers:", error);
+    res.status(500).json({ msg: "Server Error" });
+  }
+}
 };
