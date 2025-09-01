@@ -184,40 +184,44 @@ module.exports = {
       res.status(500).json({ msg: "Server Error" });
     }
   },
-n8nFullDataUsers: async (req, res) => {
+getFullDataUsers: async (req, res) => {
   try {
     const users = await User.aggregate([
       {
         $match: {
           "role.type": "developer",
           hasCompletedOnboarding: true,
-          isDelete: false
+          isDeleted: false
         }
       },
+      // Lookup de experiencias usando owner
       {
         $lookup: {
           from: "experiences",
-          localField: "experiences",
-          foreignField: "_id",
+          localField: "_id",        // el usuario actual
+          foreignField: "owner",    // owner en la colección experiences
           as: "experiences"
         }
       },
+      // Lookup de proyectos usando owner
       {
         $lookup: {
           from: "projects",
-          localField: "projects",
-          foreignField: "_id",
+          localField: "_id",
+          foreignField: "owner",
           as: "projects"
         }
       },
+      // Lookup de estudios usando owner
       {
         $lookup: {
           from: "studies",
-          localField: "studies",
-          foreignField: "_id",
+          localField: "_id",
+          foreignField: "owner",
           as: "studies"
         }
       },
+      // Excluir campos sensibles
       {
         $project: {
           password: 0,
@@ -228,10 +232,12 @@ n8nFullDataUsers: async (req, res) => {
       }
     ]);
 
+    console.log(`Found ${users.length} users with full data`);
     res.status(200).json(users);
+
   } catch (error) {
-    console.error("Error in n8nFullDataUsers:", error);
-    res.status(500).json({ msg: "Server Error" });
+    console.error("Error in getFullDataUsers:", error);
+    res.status(500).json({ msg: "Server Error", error: error.message });
   }
 }
 };
