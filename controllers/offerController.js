@@ -777,4 +777,79 @@ module.exports = {
       res.status(500).json({ msg: error.message });
     }
   },
+  getMatchOffers: async (req, res) => {
+    try {
+      const matches = await Offer.find({ isDelete: { $ne: false }, status: "active" }).populate({
+        path: "owner",
+        select: "name surname avatar",
+        match: { isDeleted: { $ne: true } }
+      });
+      res.json(matches);
+  }catch (error) {
+      res.status(500).json({ msg: error.message });
+    }
+  },
+
+  updateMatch: async (req, res) =>{
+    try {
+      const {offerId} = req.params;
+      if(!mongoose.Types.ObjectId.isValid(offerId)) return res.status(400).json({ msg: "Offer id is not valid" });
+      const { matches } = req.body;
+      const offer = await Offer.findById(offerId);
+      if (!offer) return res.status(404).json({ msg: "Offer not found" });
+      
+      if( !Array.isArray(matches) || matches.length === 0) return res.status(400).json({ msg: "Matches must be an array" });
+      for (const match of matches) {
+        const {userId, score} = match;
+        if(!mongoose.Types.ObjectId.isValid(userId)) {
+          consele.warm(`User id ${userId} is not valid`);
+          continue;
+        } ;
+        // 1. Buscar si ya existe un match para este usuario
+      const existingMatchIndex = offer.matches.findIndex(m => m.user.toString() === userId);
+
+      if (existingMatchIndex === -1) {
+        // 2a. Si NO existe, simplemente lo agregamos (es el primer match)
+        offer.matches.push({
+          user: new mongoose.Types.ObjectId(userId),
+          match: score,
+          createdAt: new Date()
+        });
+        console.log(`[updateMatch] Nuevo match creado para usuario: ${userId}, Score: ${score}`);
+      } else {
+        // 2b. Si SÍ existe, comparamos los scores
+        const existingScore = offer.matches[existingMatchIndex].match;
+
+        if (score >= existingScore) {
+          // 3. Solo actualizamos si el nuevo score es MAYOR O IGUAL
+          offer.matches[existingMatchIndex] = {
+            user: new mongoose.Types.ObjectId(userId),
+            match: score,
+            createdAt: new Date() // Actualizamos también la fecha
+          };
+          console.log(`[updateMatch] Match actualizado para usuario: ${userId}. Score anterior: ${existingScore}, Nuevo score: ${score}`);
+        } else {
+          // 4. Si el nuevo score es más bajo, lo ignoramos
+          console.log(`[updateMatch] Match ignorado para usuario: ${userId}. Score existente (${existingScore}) es mayor que el nuevo (${score}).`);
+        }
+      }
+      // --- FIN DE LA NUEVA LÓGICA ---
+    }
+
+    await offer.save();
+    console.log(`[updateMatch] Oferta ${offerId} guardada con éxito. Total de matches: ${offer.matches.length}`);
+
+    return res.status(200).json({
+      msg: "Matches procesados correctamente",
+      updatedOffer: {
+        _id: offer._id,
+        matches: offer.matches
+      }
+    });
+
+  } catch (error) {
+    console.error(`[updateMatch] Error crítico:`, error.message);
+    return res.status(500).json({ msg: "Error al actualizar los matches", error: error.message });
+  }
+},
 };
