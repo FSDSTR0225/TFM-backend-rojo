@@ -16,6 +16,8 @@ router.get("/bydev", isAuthenticated, offerController.getOffersByDev);
 
 router.get("/:id", offerController.getOfferById);
 
+router.post("/:id/match", offerController.updateMatch);
+
 router.get("/profile/:id", offerController.getOffersByOwner);
 
 router.get("/stats/:id", isAuthenticated, offerController.getRecruiterStats);
