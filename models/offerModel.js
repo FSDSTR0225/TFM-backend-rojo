@@ -38,7 +38,14 @@ const offerSchema = new mongoose.Schema({
       coverLetter: { type: String }, // Cambiado de coverLatter a coverLetter
       phone: { type: String }, // Nuevo campo para teléfono
       gdprAccepted: { type: Boolean, default: false }, // Nuevo campo GDPR
-    }]
+    }],
+    matches: [
+  {
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    score: { type: Number, required: true },
+    createdAt: { type: Date, default: Date.now },
+  },
+],
  }, {
   timestamps: true
 });
